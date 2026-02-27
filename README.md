@@ -36,14 +36,14 @@ Choose a dataset (10000+ data points) that interests you — it should include a
 
 ## Dataset
 
-*Describe the dataset you chose:*
+Dataset with +9000 movies
 
 | Field | Description |
 |---|---|
-| **Dataset source** | *e.g. Kaggle, public API, CSV, etc.* |
-| **Primary resource (CRUD)** | *e.g. Movies (id, title, release_year, genre, description)* |
-| **Secondary resource 1 (read-only)** | *e.g. Actors (id, name, movies_played)* |
-| **Secondary resource 2 (read-only)** | *e.g. Ratings (id, text, movie)* |
+| **Dataset source** | [9000+ Movies Dataset – Kaggle](https://www.kaggle.com/datasets/disham993/9000-movies-dataset) |
+| **Primary resource (CRUD)** | Movies (Title, Release_Date, Overview, Popularity, Vote_Count, Vote_Average, Poster_Url) |
+| **Secondary resource 1 (read-only)** | Genre (ID, name) |
+| **Secondary resource 2 (read-only)** | Language (ID, Code) |
 
 
 ## Design Decisions
