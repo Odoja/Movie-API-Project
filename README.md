@@ -66,6 +66,48 @@ Dataset with +9000 movies
 
 *How does your API handle errors? Describe the format and consistency of your error responses.*
 
+## Setup & Database Population
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- MongoDB (local or cloud instance)
+- Environment variables configured in `.env` file
+
+### Environment Configuration
+
+Create a `.env` file in the project root with the following variables:
+
+```env
+DB_CONNECTION_STRING=mongodb://localhost:27017/movies
+```
+
+### Running the Seed Script
+
+To populate the database with the complete movie dataset (9827 movies from the CSV file), run:
+
+```bash
+npm run seed
+```
+
+**What the script does:**
+- Connects to MongoDB using your `DB_CONNECTION_STRING`
+- Reads `public/data/mymoviedb.csv` (9827 movies)
+- Clears any existing movies in the database
+- Inserts all movies in optimized batches of 1000
+- Logs progress throughout the seeding process
+
+**Expected output:**
+```
+Connected to MongoDB
+Parsed 9827 movies from CSV
+Cleared existing movies
+Inserted batch 1 (1000 movies)
+Inserted batch 2 (1000 movies)
+...
+✓ Successfully seeded 9827 movies!
+```
+
 ## Core Technologies Used
 
 *List the technologies you chose and briefly explain why:*
@@ -115,7 +157,7 @@ See [all requirements in Issues](../../issues/). Close issues as you implement t
 | API documentation (Swagger/OpenAPI or Postman) | [#6](../../issues/6) | :white_large_square: |
 | Automated Postman tests (20+ test cases, success + failure) | [#7](../../issues/7) | :white_large_square: |
 | CI/CD pipeline running tests on every commit/MR | [#8](../../issues/8) | :white_large_square: |
-| Seed script for sample data | [#5](../../issues/5) | :white_large_square: |
+| Seed script for sample data | [#5](../../issues/5) | :green_large_square: |
 | Code quality (consistent standard, modular, documented) | [#10](../../issues/10) | :white_large_square: |
 | Deployed and publicly accessible | [#9](../../issues/9) | :white_large_square: |
 | Peer review reflection submitted on merge request | [#11](../../issues/11) | :white_large_square: |
