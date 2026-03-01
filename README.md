@@ -157,7 +157,7 @@ See [all requirements in Issues](../../issues/). Close issues as you implement t
 | API documentation (Swagger/OpenAPI or Postman) | [#6](../../issues/6) | :white_large_square: |
 | Automated Postman tests (20+ test cases, success + failure) | [#7](../../issues/7) | :white_large_square: |
 | CI/CD pipeline running tests on every commit/MR | [#8](../../issues/8) | :white_large_square: |
-| Seed script for sample data | [#5](../../issues/5) | :green_large_square: |
+| Seed script for sample data | [#5](../../issues/5) | ✅ |
 | Code quality (consistent standard, modular, documented) | [#10](../../issues/10) | :white_large_square: |
 | Deployed and publicly accessible | [#9](../../issues/9) | :white_large_square: |
 | Peer review reflection submitted on merge request | [#11](../../issues/11) | :white_large_square: |
