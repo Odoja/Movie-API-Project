@@ -1,0 +1,26 @@
+{
+  "name": "assignment-api-design",
+  "version": "1.0.0",
+  "description": "*Replace with the name of your API project.*",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon --inspect --env-file=.env src/server.js",
+    "seed": "node --env-file=.env seeds/seedMovies.js",
+    "lint": "npx eslint ./src ./public || exit 0",
+    "lint:fix": "npx eslint ./src ./public --fix || exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-ejs-layouts": "^2.5.1",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
