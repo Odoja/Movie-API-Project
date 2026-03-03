@@ -129,7 +129,7 @@ See [all requirements in Issues](../../issues/). Close issues as you implement t
 
 | Requirement | Issue | Status |
 |---|---|---|
-| Data acquisition — choose and document a dataset (1000+ data points) | [#1](../../issues/1) | :white_large_square: |
+| Data acquisition — choose and document a dataset (1000+ data points) | [#1](../../issues/1) | ✅ |
 | Full CRUD for primary resource, read-only for secondary resources | [#2](../../issues/2) | :white_large_square: |
 | JWT authentication for write operations | [#3](../../issues/3) | :white_large_square: |
 | Error handling (400, 401, 404 with consistent format) | [#4](../../issues/4) | :white_large_square: |
@@ -146,9 +146,9 @@ See [all requirements in Issues](../../issues/). Close issues as you implement t
 
 | Requirement | Issue | Status |
 |---|---|---|
-| Queries and mutations via single `/graphql` endpoint | [#14](../../issues/14) | :white_large_square: |
-| At least one nested query | [#15](../../issues/15) | :white_large_square: |
-| GraphQL Playground available | [#16](../../issues/16) | :white_large_square: |
+| Queries and mutations via single `/graphql` endpoint | [#14](../../issues/14) | ❌ |
+| At least one nested query | [#15](../../issues/15) | ❌ |
+| GraphQL Playground available | [#16](../../issues/16) | ❌ |
 
 ### Non-Functional Requirements
 
