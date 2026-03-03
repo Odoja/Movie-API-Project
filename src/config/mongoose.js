@@ -1,4 +1,7 @@
 import mongoose from 'mongoose'
+import '../models/schemes/movieSchema.js'
+import '../models/schemes/genreSchema.js'
+import '../models/schemes/languageSchema.js'
 
 /**
  * Establishes a connection to a database.

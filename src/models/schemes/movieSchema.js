@@ -5,19 +5,19 @@ const movieSchema = new mongoose.Schema({
   releaseDate: String,
   title: String,
   overview: String,
-  popularity: Number,
-  voteCount: Number,
-  voteAverage: Number,
-  genreId: {
-    type: mongoose.Schema.Types.ObjectId,
+  popularity: { type: Number, default: 0 },
+  voteCount: { type: Number, default: 0 },
+  voteAverage: { type: Number, default: 0 },
+  genre: {
+    type: String,
     ref: 'Genre'
   },
-  languageId: {
-    type: mongoose.Schema.Types.ObjectId,
+  language: {
+    type: String,
     ref: 'Language'
   },
   posterUrl: String
-})
+}, { strict: true })
 
 movieSchema.add(BASE_SCHEMA)
 

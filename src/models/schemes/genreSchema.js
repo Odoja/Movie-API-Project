@@ -1,14 +1,12 @@
 import mongoose from 'mongoose'
-import { BASE_SCHEMA } from './baseSchema.js'
 
 const genreSchema = new mongoose.Schema({
+  _id: { type: String },
   name: {
     type: String,
     required: true,
     unique: true
   }
-})
-
-genreSchema.add(BASE_SCHEMA)
+}, { strict: true })
 
 export const Genre = mongoose.model('Genre', genreSchema)
