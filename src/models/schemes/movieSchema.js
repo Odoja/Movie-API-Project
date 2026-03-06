@@ -9,11 +9,11 @@ const movieSchema = new mongoose.Schema({
   voteCount: { type: Number, default: 0 },
   voteAverage: { type: Number, default: 0 },
   genre: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Genre'
   },
   language: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Language'
   },
   posterUrl: String
