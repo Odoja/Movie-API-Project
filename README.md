@@ -93,7 +93,6 @@ npm run seed
 **What the script does:**
 - Connects to MongoDB using your `DB_CONNECTION_STRING`
 - Reads `public/data/mymoviedb.csv` (9827 movies)
-- Clears any existing movies in the database
 - Inserts all movies in optimized batches of 1000
 - Logs progress throughout the seeding process
 
@@ -101,7 +100,8 @@ npm run seed
 ```
 Connected to MongoDB
 Parsed 9827 movies from CSV
-Cleared existing movies
+Upserted 19 genres
+Upserted 43 languages
 Inserted batch 1 (1000 movies)
 Inserted batch 2 (1000 movies)
 ...
