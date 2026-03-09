@@ -1,7 +1,7 @@
+import http from 'node:http'
 import express from 'express'
-import expressLayouts from 'express-ejs-layouts'
-import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import helmet from 'helmet'
+import cors from 'cors'
 import { connectToDatabase } from './config/mongoose.js'
 import { router } from './routes/router.js'
 
@@ -12,42 +12,39 @@ try {
   // Creates an Express application.
   const app = express()
 
-  // Get the directory name of this module's path.
-  const directoryFullName = dirname(fileURLToPath(import.meta.url))
+  // Set various HTTP headers to make the application little more secure (https://www.npmjs.com/package/helmet).
+  app.use(helmet())
 
-  // Set the base URL to use for all relative URLs in a document.
-  const baseURL = process.env.BASE_URL || '/'
+  // Enable Cross Origin Resource Sharing (CORS) (https://www.npmjs.com/package/cors).
+  app.use(cors())
 
-  // View engine setup.
-  app.set('view engine', 'ejs')
-  app.set('views', join(directoryFullName, 'views'))
-  app.set('layout', join(directoryFullName, 'views', 'layouts', 'default'))
-  app.use(expressLayouts)
-
-  // Middleware
-  app.use(express.urlencoded({ extended: false }))
-  app.use(express.json())
-  app.use(express.static(join(directoryFullName, '..', 'public')))
-  app.use((req, res, next) => {
-    res.locals.baseURL = baseURL
-    next()
-  })
+  // Parse requests of the content type application/json.
+  app.use(express.json({ limit: '500kb' }))
 
   // Register routes.
   app.use('/', router)
 
+  // Error handler.
   app.use((err, req, res, _next) => {
     console.error(err.message, { error: err })
 
-    if (err.status === 404) {
-      return res.status(404).sendFile(join(directoryFullName, 'views', 'errors', '404.html'))
+    if (!err.status) {
+      err.status = 500
     }
 
     if (process.env.NODE_ENV === 'production') {
-      return res.status(500).sendFile(join(directoryFullName, 'views', 'errors', '500.html'))
+      return res.status(err.status).json({
+        status: err.status,
+        message: http.STATUS_CODES[err.status]
+      })
     }
 
-    res.status(err.status || 500).render('errors/error', { error: err })
+    // In development, include full error details.
+    res.status(err.status || 500).json({
+      status: err.status || 500,
+      message: err.message,
+      error: err
+    })
   })
 
   // Starts the HTTP server listening for connections.
