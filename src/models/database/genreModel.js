@@ -1,5 +1,5 @@
-import { Genre } from "./schemes/genreSchema.js"
-import { formatGenre } from "../utils/formatters.js"
+import { Genre } from "../schemes/genreSchema.js"
+import { formatGenre } from "../../utils/formatters.js"
 
 export class genreModel {
   constructor() { }

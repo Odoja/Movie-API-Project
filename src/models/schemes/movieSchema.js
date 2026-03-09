@@ -8,10 +8,10 @@ const movieSchema = new mongoose.Schema({
   popularity: { type: Number, default: 0 },
   voteCount: { type: Number, default: 0 },
   voteAverage: { type: Number, default: 0 },
-  genre: {
+  genres: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Genre'
-  },
+  }],
   language: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Language'

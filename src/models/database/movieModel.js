@@ -1,5 +1,5 @@
-import { Movie } from './schemes/movieSchema.js'
-import { formatMovie } from '../utils/formatters.js'
+import { Movie } from '../schemes/movieSchema.js'
+import { formatMovie } from '../../utils/formatters.js'
 
 export class movieModel {
   constructor() { }
@@ -11,7 +11,7 @@ export class movieModel {
    */
   async getMovies() {
     const movies = await Movie.find()
-      .populate('genre')
+      .populate('genres')
       .populate('language')
 
     if (!movies) {
@@ -29,7 +29,7 @@ export class movieModel {
    */
   async getMovieById(id) {
     const movie = await Movie.findById(id)
-      .populate('genre')
+      .populate('genres')
       .populate('language')
 
     if (!movie) {
@@ -49,7 +49,7 @@ export class movieModel {
     const movie = new Movie(data)
 
     await movie.save()
-    await movie.populate('genre')
+    await movie.populate('genres')
     await movie.populate('language')
 
     return formatMovie(movie)
@@ -64,7 +64,7 @@ export class movieModel {
    */
   async updateMovie(id, data) {
     const movie = await Movie.findByIdAndUpdate(id, data, { new: true })
-      .populate('genre')
+      .populate('genres')
       .populate('language')
 
     if (!movie) {

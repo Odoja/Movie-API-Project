@@ -1,4 +1,4 @@
-import { genreModel } from '../models/genreModel.js'
+import { genreModel } from '../../models/database/genreModel.js'
 
 const genreM = new genreModel()
 

@@ -1,5 +1,5 @@
-import { Language } from "./schemes/languageSchema.js"
-import { formatLanguage } from "../utils/formatters.js"
+import { Language } from "../schemes/languageSchema.js"
+import { formatLanguage } from "../../utils/formatters.js"
 
 export class languageModel {
   constructor() { }

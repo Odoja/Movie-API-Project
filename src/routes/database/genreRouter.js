@@ -1,5 +1,5 @@
 import express from 'express'
-import { genreController } from '../controllers/genreController.js'
+import { genreController } from '../../controllers/database/genreController.js'
 
 export const router = express.Router()
 const controller = new genreController()

@@ -1,4 +1,4 @@
-import { movieModel } from "../models/movieModel.js"
+import { movieModel } from "../../models/database/movieModel.js"
 
 const movieM = new movieModel()
 

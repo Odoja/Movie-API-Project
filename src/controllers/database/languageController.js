@@ -1,4 +1,4 @@
-import { languageModel } from '../models/languageModel.js'
+import { languageModel } from '../../models/database/languageModel.js'
 
 const languageM = new languageModel()
 
