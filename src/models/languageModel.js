@@ -1,15 +1,37 @@
-import { Language } from "./schemes/languageSchema"
+import { Language } from "./schemes/languageSchema.js"
+import { formatLanguage } from "../utils/formatters.js"
 
-/**
- * Fetches all languages.
- *
- * @returns {Promise<Array>} - Array of language objects.
- */
-export async function getLanguages() {
-  const languages = await Language.find()
+export class languageModel {
+  constructor() { }
 
-  return languages.map(language => ({
-    id: language._id,
-    code: language.code
-  }))
+  /**
+   * Fetches all languages.
+   *
+   * @returns {Promise<Array>} - Array of language objects.
+   */
+  async getLanguages() {
+    const languages = await Language.find()
+
+    if (!languages) {
+      throw new Error('No languages found')
+    }
+
+    return languages.map(language => formatLanguage(language))
+  }
+
+  /**
+   * Fetches a single language by ID.
+   *
+   * @param {string} id - The language ID.
+   * @returns {Promise<Object>} - Language object.
+   */
+  async getLanguageById(id) {
+    const language = await Language.findById(id)
+
+    if (!language) {
+      throw new Error('Language not found')
+    }
+
+    return formatLanguage(language)
+  }
 }
