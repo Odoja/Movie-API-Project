@@ -5,32 +5,27 @@ export const router = express.Router()
 const controller = new movieController()
 
 
-// GET /images - List all images
+// GET /movies - List all movies
 router.get('/',
   (req, res, next) => controller.getMovies(req, res, next)
 )
 
-// POST /images - Create image
+// POST /movies - Create movie
 router.post('/',
   (req, res, next) => controller.createMovie(req, res, next)
 )
 
-// GET /images/:id - Get single image
+// GET /movies/:id - Get single movie
 router.get('/:id',
   (req, res, next) => controller.getMovieById(req, res, next)
 )
 
-// PUT /images/:id - Edit image
+// PUT /movies/:id - Edit movie
 router.put('/:id',
   (req, res, next) => controller.updateMovie(req, res, next)
 )
 
-// PATCH /images/:id - Partially edit image
-router.patch('/:id',
-  (req, res, next) => controller.updateMovie(req, res, next)
-)
-
-// DELETE /images/:id - Delete image
+// DELETE /movies/:id - Delete movie
 router.delete('/:id',
   (req, res, next) => controller.deleteMovie(req, res, next)
 )
