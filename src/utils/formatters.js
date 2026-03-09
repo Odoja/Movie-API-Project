@@ -18,3 +18,17 @@ export function formatMovie(movie) {
     posterUrl: movie.posterUrl
   }
 }
+
+export function formatGenre(genre) {
+  return {
+    id: genre._id,
+    name: genre.name
+  }
+}
+
+export function formatLanguage(language) {
+  return {
+    id: language._id,
+    code: language.code
+  }
+}
