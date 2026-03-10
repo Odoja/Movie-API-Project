@@ -1,4 +1,5 @@
 import { genreModel } from '../../models/database/genreModel.js'
+import { formatGenre } from "../../utils/formatters.js"
 
 const genreM = new genreModel()
 
@@ -6,7 +7,7 @@ export class genreController {
   async getGenres(req, res, next) {
     try {
       const genres = await genreM.getGenres()
-      res.json(genres)
+      res.json(genres.map(genre => formatGenre(genre)))
     } catch (err) {
       next(err)
     }
@@ -15,7 +16,7 @@ export class genreController {
   async getGenreById(req, res, next) {
     try {
       const genre = await genreM.getGenreById(req.params.id)
-      res.json(genre)
+      res.json(formatGenre(genre))
     } catch (err) {
       next(err)
     }

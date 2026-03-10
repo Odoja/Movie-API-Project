@@ -1,5 +1,4 @@
 import { Movie } from '../schemes/movieSchema.js'
-import { formatMovie } from '../../utils/formatters.js'
 
 export class movieModel {
   constructor() { }
@@ -18,7 +17,7 @@ export class movieModel {
       throw new Error('No movies found')
     }
 
-    return movies.map(movie => formatMovie(movie))
+    return movies
   }
 
   /**
@@ -36,7 +35,7 @@ export class movieModel {
       throw new Error('Movie not found')
     }
 
-    return formatMovie(movie)
+    return movie
   }
 
   /**
@@ -52,7 +51,7 @@ export class movieModel {
     await movie.populate('genres')
     await movie.populate('language')
 
-    return formatMovie(movie)
+    return movie
   }
 
   /**
@@ -71,7 +70,7 @@ export class movieModel {
       throw new Error('Movie not found')
     }
 
-    return formatMovie(movie)
+    return movie
   }
 
   /**

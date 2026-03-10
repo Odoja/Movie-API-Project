@@ -1,5 +1,4 @@
 import { Genre } from "../schemes/genreSchema.js"
-import { formatGenre } from "../../utils/formatters.js"
 
 export class genreModel {
   constructor() { }
@@ -16,7 +15,7 @@ export class genreModel {
       throw new Error('No genres found')
     }
 
-    return genres.map(genre => formatGenre(genre))
+    return genres
   }
 
   /**
@@ -32,6 +31,6 @@ export class genreModel {
       throw new Error('Genre not found')
     }
 
-    return formatGenre(genre)
+    return genre
   }
 }

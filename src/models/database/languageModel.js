@@ -1,5 +1,4 @@
 import { Language } from "../schemes/languageSchema.js"
-import { formatLanguage } from "../../utils/formatters.js"
 
 export class languageModel {
   constructor() { }
@@ -16,7 +15,7 @@ export class languageModel {
       throw new Error('No languages found')
     }
 
-    return languages.map(language => formatLanguage(language))
+    return languages
   }
 
   /**
@@ -32,6 +31,6 @@ export class languageModel {
       throw new Error('Language not found')
     }
 
-    return formatLanguage(language)
+    return language
   }
 }

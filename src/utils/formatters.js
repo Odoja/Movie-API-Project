@@ -19,6 +19,11 @@ export function formatMovie(movie) {
   }
 }
 
+/**
+ * Formats a genre document for API response.
+ * @param {object} genre 
+ * @returns {object} - Formatted genre object.
+ */
 export function formatGenre(genre) {
   return {
     id: genre._id,
@@ -26,6 +31,12 @@ export function formatGenre(genre) {
   }
 }
 
+/**
+ * Formats a language document for API response.
+ * 
+ * @param {object} language 
+ * @returns {object} - Formatted language object.
+ */
 export function formatLanguage(language) {
   return {
     id: language._id,

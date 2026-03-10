@@ -1,4 +1,5 @@
 import { movieModel } from "../../models/database/movieModel.js"
+import { formatMovie } from '../../utils/formatters.js'
 
 const movieM = new movieModel()
 
@@ -7,7 +8,7 @@ export class movieController {
   async getMovies(req, res, next) {
     try {
       const movies = await movieM.getMovies()
-      res.json(movies)
+      res.json(movies.map(movie => formatMovie(movie)))
     } catch (err) {
       next(err)
     }
@@ -16,7 +17,7 @@ export class movieController {
   async getMovieById(req, res, next) {
     try {
       const movie = await movieM.getMovieById(req.params.id)
-      res.json(movie)
+      res.json(formatMovie(movie))
     } catch (err) {
       next(err)
     }
@@ -28,10 +29,8 @@ export class movieController {
 
       const movieData = {...req.body,owner: req.user.id}
       const movie = await movieM.createMovie(movieData)
-      
-      console.log(movie)
 
-      res.status(201).json(movie)
+      res.status(201).json(formatMovie(movie))
     } catch (error) {
       console.log('Resource creation failed', { error: error.message })
       next(error)
@@ -41,7 +40,8 @@ export class movieController {
   async updateMovie(req, res, next) {
     try {
       const movie = await movieM.updateMovie(req.params.id, req.body)
-      res.json(movie)
+      
+      res.json(formatMovie(movie))
     } catch (error) {
       next(error)
     }
