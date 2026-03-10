@@ -130,8 +130,8 @@ See [all requirements in Issues](../../issues/). Close issues as you implement t
 | Requirement | Issue | Status |
 |---|---|---|
 | Data acquisition — choose and document a dataset (1000+ data points) | [#1](../../issues/1) | ✅ |
-| Full CRUD for primary resource, read-only for secondary resources | [#2](../../issues/2) | :white_large_square: |
-| JWT authentication for write operations | [#3](../../issues/3) | :white_large_square: |
+| Full CRUD for primary resource, read-only for secondary resources | [#2](../../issues/2) | ✅ |
+| JWT authentication for write operations | [#3](../../issues/3) | ✅ |
 | Error handling (400, 401, 404 with consistent format) | [#4](../../issues/4) | :white_large_square: |
 | Filtering and pagination for large result sets | [#17](../../issues/17) | :white_large_square: |
 
