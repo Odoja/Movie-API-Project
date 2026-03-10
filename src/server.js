@@ -4,6 +4,7 @@ import helmet from 'helmet'
 import cors from 'cors'
 import { connectToDatabase } from './config/mongoose.js'
 import { router } from './routes/router.js'
+import { errorHandler } from './middleware/errorHandler.js'
 
 try {
   // Connect to MongoDB.
@@ -25,27 +26,7 @@ try {
   app.use('/', router)
 
   // Error handler.
-  app.use((err, req, res, _next) => {
-    console.error(err.message, { error: err })
-
-    if (!err.status) {
-      err.status = 500
-    }
-
-    if (process.env.NODE_ENV === 'production') {
-      return res.status(err.status).json({
-        status: err.status,
-        message: http.STATUS_CODES[err.status]
-      })
-    }
-
-    // In development, include full error details.
-    res.status(err.status || 500).json({
-      status: err.status || 500,
-      message: err.message,
-      error: err
-    })
-  })
+  app.use(errorHandler)
 
   // Starts the HTTP server listening for connections.
   const server = app.listen(process.env.PORT, () => {
