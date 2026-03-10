@@ -5,6 +5,9 @@ import { authenticateJWT, requireBody, checkOwnership } from '../../middleware/a
 export const router = express.Router()
 const controller = new movieController()
 
+// Provide req.doc to the route if :id is present in the route path.
+router.param('id', (req, res, next, id) => controller.loadMovie(req, res, next, id))
+
 
 // GET /movies - List all movies
 router.get('/',
