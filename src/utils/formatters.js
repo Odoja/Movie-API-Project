@@ -13,7 +13,7 @@ export function formatMovie(movie) {
     popularity: movie.popularity,
     voteCount: movie.voteCount,
     voteAverage: movie.voteAverage,
-    genre: movie.genre?.name,
+    genres: movie.genres?.map(g => g.name).join(', '),
     language: movie.language?.code,
     posterUrl: movie.posterUrl
   }

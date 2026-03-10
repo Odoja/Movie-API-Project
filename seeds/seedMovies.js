@@ -6,6 +6,7 @@ import { connectToDatabase } from '../src/config/mongoose.js'
 import { Movie } from '../src/models/schemes/movieSchema.js'
 import { Genre } from '../src/models/schemes/genreSchema.js'
 import { Language } from '../src/models/schemes/languageSchema.js'
+import { UserModel } from '../src/models/schemes/userSchema.js'
 
 // Get directory paths
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -15,6 +16,22 @@ async function seedDatabase() {
   try {
     await connectToDatabase(process.env.DB_CONNECTION_STRING)
     console.log('Connected to MongoDB')
+
+    // Create or get admin user
+    let adminUser = await UserModel.findOne({ username: 'admin' })
+
+    if (!adminUser) {
+      adminUser = await UserModel.create({
+        username: 'admin',
+        password: 'AdminPassword123!',
+        email: 'admin@example.com',
+        firstName: 'Admin',
+        lastName: 'User'
+      })
+      console.log('Created admin user for data ownership')
+    } else {
+      console.log('Using existing admin user')
+    }
 
     // Parse CSV
     const movies = []
@@ -66,7 +83,9 @@ async function seedDatabase() {
       const batch = movies.slice(i, i + batchSize)
 
       const movieDocs = batch.map(row => {
-        const firstGenre = row.Genre ? row.Genre.split(',')[0].trim() : null
+        const genreNames = row.Genre ? row.Genre.split(',').map(g => g.trim()) : []
+        const genreIds = genreNames.map(name => genreMap.get(name)).filter(id => id)
+        
         return {
           releaseDate: row.Release_Date || '',
           title: row.Title || '',
@@ -74,9 +93,10 @@ async function seedDatabase() {
           popularity: parseFloat(row.Popularity) || 0,
           voteCount: parseInt(row.Vote_Count) || 0,
           voteAverage: parseFloat(row.Vote_Average) || 0,
-          genre: firstGenre ? genreMap.get(firstGenre) : null,
+          genres: genreIds,
           language: row.Original_Language ? languageMap.get(row.Original_Language) : null,
-          posterUrl: row.Poster_Url || ''
+          posterUrl: row.Poster_Url || '',
+          owner: adminUser._id
         }
       })
 

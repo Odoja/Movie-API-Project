@@ -1,6 +1,6 @@
 import http from 'node:http'
 import { JWT } from '../../utils/JWT.js'
-import { UserModel } from '../../models/user/userModel.js'
+import { UserModel } from '../../models/schemes/userSchema.js'
 
 /**
  * Encapsulates the authentication controller.

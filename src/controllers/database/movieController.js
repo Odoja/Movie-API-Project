@@ -24,9 +24,16 @@ export class movieController {
 
   async createMovie(req, res, next) {
     try {
-      const movie = await movieM.createMovie(req.body)
+      console.log('Creating new resource', { userId: req.user.id })
+
+      const movieData = {...req.body,owner: req.user.id}
+      const movie = await movieM.createMovie(movieData)
+      
+      console.log(movie)
+
       res.status(201).json(movie)
     } catch (error) {
+      console.log('Resource creation failed', { error: error.message })
       next(error)
     }
   }

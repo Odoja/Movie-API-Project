@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
 import validator from 'validator'
-import { BASE_SCHEMA } from '../schemes/baseSchema.js'
+import { BASE_SCHEMA } from './baseSchema.js'
 
 const { isEmail } = validator
 

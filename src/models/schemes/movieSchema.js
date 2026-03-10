@@ -16,7 +16,12 @@ const movieSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Language'
   },
-  posterUrl: String
+  posterUrl: String,
+  owner: {
+    type: String,
+    required: [true, 'Owner is required'],
+    index: true
+  }
 }, { strict: true })
 
 movieSchema.add(BASE_SCHEMA)
