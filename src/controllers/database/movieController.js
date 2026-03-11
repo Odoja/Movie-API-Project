@@ -1,23 +1,21 @@
 import { movieModel } from "../../models/database/movieModel.js"
-import { Movie } from "../../models/schemes/movieSchema.js"
 import { formatMovie } from '../../utils/formatters.js'
 
 const movieM = new movieModel()
 
 export class movieController {
 
+  /**
+   * Provide req.doc to the route if :id is present.
+   *
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {Function} next - Express next middleware function.
+   * @param {string} id - The value of the id for the resource to load.
+   */
   async loadMovie(req, res, next, id) {
     try {
-      const movie = await Movie.findById(id)
-        .populate('genres')
-        .populate('language')
-
-      if (!movie) {
-        const error = new Error('Movie not found')
-        error.status = 404
-        throw error
-      }
-
+      const movie = await movieM.getMovieById(id)
       req.doc = movie
       next()
     } catch (error) {
@@ -97,7 +95,6 @@ export class movieController {
         }
       }
 
-      // Only save if something was actually modified
       if (req.doc.isModified()) {
         await req.doc.validate()
         await req.doc.save()

@@ -1,4 +1,3 @@
-import http from 'node:http'
 import { JWT } from '../utils/JWT.js'
 
 /**
@@ -28,13 +27,7 @@ export const authenticateJWT = async (req, res, next) => {
 
     next()
   } catch (error) {
-    // Authentication failed.
-    const statusCode = 401
-    const err = new Error(http.STATUS_CODES[statusCode])
-    err.status = statusCode
-    err.cause = error
-
-    next(err)
+    next(new Error('Unauthorized'))
   }
 }
 
@@ -48,9 +41,7 @@ export const authenticateJWT = async (req, res, next) => {
 export const checkOwnership = async (req, res, next) => {
   try {
     if (req.doc.owner.toString() !== req.user.id) {
-      const error = new Error('You can only modify your own resources')
-      error.status = 403
-      throw error
+      throw new Error('Forbidden')
     }
 
     next()
