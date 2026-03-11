@@ -1,10 +1,20 @@
 import http from 'node:http'
 
+const errorStatusMap = {
+  'Unauthorized': 401,
+  'Forbidden': 403,
+  'Movie not found': 404,
+  'Genre not found': 404,
+  'Language not found': 404,
+  'Username already in use': 409,
+  'Email already in use': 409,
+}
+
 /**
  * Global error handler middleware.
  *
  * Handles all errors thrown in the application and formats them consistently.
- * Handles Mongoose ValidationError specifically to return 400 with validation message.
+ * Maps error messages to appropriate HTTP status codes.
  *
  * @param {Error} err - The error object.
  * @param {object} req - Express request object.
@@ -16,28 +26,38 @@ export const errorHandler = (err, req, res, _next) => {
 
   // Handle Mongoose ValidationError
   if (err.name === 'ValidationError') {
-    const firstError = Object.values(err.errors)[0]
+    const errors = Object.keys(err.errors)
+      .map(field => field.split('.')[0])
+      .join(', ')
+
     return res.status(400).json({
       status: 400,
-      message: firstError.message
+      message: 'Invalid input',
+      field: errors
     })
   }
 
-  if (!err.status) {
-    err.status = 500
+  // Handle Mongoose CastError
+  if (err.name === 'CastError') {
+    return res.status(404).json({
+      status: 404,
+      message: 'Resource not found'
+    })
   }
+
+  // Map error message to status code
+  const status = errorStatusMap[err.message] || err.status || 500
 
   if (process.env.NODE_ENV === 'production') {
-    return res.status(err.status).json({
-      status: err.status,
-      message: http.STATUS_CODES[err.status]
+    return res.status(status).json({
+      status: status,
+      message: http.STATUS_CODES[status]
     })
   }
 
-  // In development, include full error details.
-  res.status(err.status || 500).json({
-    status: err.status || 500,
-    message: err.message,
-    error: err
+  // In development, include error details.
+  res.status(status).json({
+    status: status,
+    message: err.message
   })
 }

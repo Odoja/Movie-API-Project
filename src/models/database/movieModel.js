@@ -14,7 +14,7 @@ export class movieModel {
       .populate('language')
 
     if (!movies) {
-      throw new Error('No movies found')
+      throw new Error('Movies not found')
     }
 
     return movies

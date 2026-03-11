@@ -12,7 +12,7 @@ export class genreModel {
     const genres = await Genre.find()
 
     if (!genres) {
-      throw new Error('No genres found')
+      throw new Error('Genres not found')
     }
 
     return genres
