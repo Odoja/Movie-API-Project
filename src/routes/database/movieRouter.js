@@ -5,10 +5,6 @@ import { authenticateJWT, requireBody, checkOwnership } from '../../middleware/a
 export const router = express.Router()
 const controller = new movieController()
 
-// Provide req.doc to the route if :id is present in the route path.
-router.param('id', (req, res, next, id) => controller.loadMovie(req, res, next, id))
-
-
 // GET /movies - List all movies
 router.get('/',
   (req, res, next) => controller.getMovies(req, res, next)
@@ -16,6 +12,7 @@ router.get('/',
 
 // GET /movies/:id - Get single movie
 router.get('/:id',
+  (req, res, next) => controller.loadMovie(req, res, next, req.params.id),
   (req, res, next) => controller.getMovieById(req, res, next)
 )
 
@@ -28,6 +25,7 @@ router.post('/',
 // PUT /movies/:id - Edit movie
 router.put('/:id',
   authenticateJWT,
+  (req, res, next) => controller.loadMovie(req, res, next, req.params.id),
   requireBody,
   checkOwnership,
   (req, res, next) => controller.updateMovie(req, res, next)
@@ -36,6 +34,7 @@ router.put('/:id',
 // DELETE /movies/:id - Delete movie
 router.delete('/:id',
   authenticateJWT,
+  (req, res, next) => controller.loadMovie(req, res, next, req.params.id),
   checkOwnership,
   (req, res, next) => controller.deleteMovie(req, res, next)
 )
