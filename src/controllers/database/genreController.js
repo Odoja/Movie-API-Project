@@ -7,7 +7,7 @@ export class genreController {
   async getGenres(req, res, next) {
     try {
       const genres = await genreM.getGenres()
-      res.json(genres.map(genre => formatGenre(genre)))
+      res.json(genres.map(genre => formatGenre(genre, req)))
     } catch (err) {
       next(err)
     }
@@ -16,7 +16,7 @@ export class genreController {
   async getGenreById(req, res, next) {
     try {
       const genre = await genreM.getGenreById(req.params.id)
-      res.json(formatGenre(genre))
+      res.json(formatGenre(genre, req))
     } catch (err) {
       next(err)
     }

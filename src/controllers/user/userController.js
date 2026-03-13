@@ -4,9 +4,9 @@ import { userModel } from '../../models/user/userModel.js'
 const userM = new userModel()
 
 /**
- * Encapsulates the authentication controller.
+ * Encapsulates the user controller.
  */
-export class AuthController {
+export class UserController {
   /**
    * Authenticates a user and returns JWT access token.
    *

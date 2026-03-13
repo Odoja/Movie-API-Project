@@ -7,7 +7,7 @@ export class languageController {
   async getLanguages(req, res, next) {
     try {
       const languages = await languageM.getLanguages()
-      res.json(languages.map(language => formatLanguage(language)))
+      res.json(languages.map(language => formatLanguage(language, req)))
     } catch (err) {
       next(err)
     }
@@ -16,7 +16,7 @@ export class languageController {
   async getLanguageById(req, res, next) {
     try {
       const language = await languageM.getLanguageById(req.params.id)
-      res.json(formatLanguage(language))
+      res.json(formatLanguage(language, req))
     } catch (err) {
       next(err)
     }

@@ -35,7 +35,7 @@ export class movieController {
   async getMovies(req, res, next) {
     try {
       const movies = await movieM.getMovies()
-      res.json(movies.map(movie => formatMovie(movie)))
+      res.json(movies.map(movie => formatMovie(movie, req)))
     } catch (err) {
       next(err)
     }
@@ -53,7 +53,7 @@ export class movieController {
   async getMovieById(req, res, next) {
     try {
       const movie = await movieM.getMovieById(req.params.id)
-      res.json(formatMovie(movie))
+      res.json(formatMovie(movie, req))
     } catch (err) {
       next(err)
     }
@@ -71,7 +71,7 @@ export class movieController {
       const movieData = { ...req.body, owner: req.user.id }
       const movie = await movieM.createMovie(movieData)
 
-      res.status(201).json(formatMovie(movie))
+      res.status(201).json(formatMovie(movie, req))
     } catch (error) {
       next(error)
     }
