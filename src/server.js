@@ -2,6 +2,8 @@ import http from 'node:http'
 import express from 'express'
 import helmet from 'helmet'
 import cors from 'cors'
+import swaggerUi from 'swagger-ui-express'
+import { swaggerSpec } from './config/swagger.js'
 import { connectToDatabase } from './config/mongoose.js'
 import { router } from './routes/router.js'
 import { errorHandler } from './middleware/errorHandler.js'
@@ -21,6 +23,13 @@ try {
 
   // Parse requests of the content type application/json.
   app.use(express.json({ limit: '500kb' }))
+
+  // Swagger API documentation
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    swaggerOptions: {
+      persistAuthorization: true
+    }
+  }))
 
   // Register routes.
   app.use('/', router)

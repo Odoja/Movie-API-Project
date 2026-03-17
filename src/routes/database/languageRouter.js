@@ -4,12 +4,57 @@ import { languageController } from '../../controllers/database/languageControlle
 export const router = express.Router()
 const controller = new languageController()
 
-// GET /languages - List all languages (read-only)
+/**
+ * @swagger
+ * /languages:
+ *   get:
+ *     tags:
+ *       - Languages
+ *     summary: Get all languages
+ *     description: Retrieve a list of all available languages in the system
+ *     responses:
+ *       200:
+ *         description: A list of languages
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Language'
+ *       500:
+ *         description: Server error
+ */
 router.get('/',
   (req, res, next) => controller.getLanguages(req, res, next)
 )
 
-// GET /languages/:id - Get single language (read-only)
+/**
+ * @swagger
+ * /languages/{id}:
+ *   get:
+ *     tags:
+ *       - Languages
+ *     summary: Get a single language
+ *     description: Retrieve details of a specific language by its ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The language ID
+ *     responses:
+ *       200:
+ *         description: Language found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Language'
+ *       404:
+ *         description: Language not found
+ *       500:
+ *         description: Server error
+ */
 router.get('/:id',
   (req, res, next) => controller.getLanguageById(req, res, next)
 )
