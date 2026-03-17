@@ -4,20 +4,26 @@ export class movieModel {
   constructor() { }
 
   /**
-   * Fetches all movies.
+   * Fetches movies with pagination.
    *
-   * @returns {Promise<Array>} - Array of movie objects.
+   * @param {number} skip - Number of documents to skip
+   * @param {number} limit - Number of documents to return
+   * @param {Object} query - MongoDB query object
+   * @returns {Promise<Object>} - Object with movies array and total count.
    */
-  async getMovies() {
-    const movies = await Movie.find()
+  async getMovies(skip = 0, limit = 20, query = {}) {
+    const total = await Movie.countDocuments(query)
+    const movies = await Movie.find(query)
+      .skip(skip)
+      .limit(limit)
       .populate('genres')
       .populate('language')
 
-    if (!movies) {
+    if (total === 0) {
       throw new Error('Movies not found')
     }
 
-    return movies
+    return { movies, total }
   }
 
   /**

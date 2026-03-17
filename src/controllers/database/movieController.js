@@ -1,7 +1,10 @@
 import { movieModel } from "../../models/database/movieModel.js"
 import { formatMovie } from '../../utils/formatters.js'
+import { Pagination } from '../../utils/pagination.js'
+import { titleQuery } from "../../utils/filtering.js"
 
 const movieM = new movieModel()
+const pagination = new Pagination()
 
 export class movieController {
 
@@ -24,9 +27,7 @@ export class movieController {
   }
 
   /**
-   * Sends a JSON response containing all movies.
-   *
-   * Public, no ownership check is performed.
+   * Sends a JSON response containing movies with pagination and filtering.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
@@ -34,8 +35,20 @@ export class movieController {
    */
   async getMovies(req, res, next) {
     try {
-      const movies = await movieM.getMovies()
-      res.json(movies.map(movie => formatMovie(movie, req)))
+      const page = parseInt(req.query.page) || 1
+      const limit = 20
+      const skip = (page - 1) * limit
+
+      const query = titleQuery(req.query)
+
+      const result = await movieM.getMovies(skip, limit, query)
+
+      const metaData = pagination.buildMetadata(page, limit, result.total, req)
+
+      res.json({
+        movies: result.movies.map(movie => formatMovie(movie, req)),
+        metaData
+      })
     } catch (err) {
       next(err)
     }
