@@ -10,42 +10,57 @@ const controller = new movieController()
  * /movies:
  *   get:
  *     summary: Get all movies
- *     description: Retrieves a paginated list of all movies in the database
+ *     description: Retrieves a paginated and filtered list of all movies in the database. Uses page-based pagination (1-indexed).
  *     tags: [Movies]
  *     parameters:
  *       - in: query
- *         name: skip
+ *         name: page
  *         schema:
  *           type: integer
- *           default: 0
- *         description: Number of documents to skip
+ *           default: 1
+ *         description: Page number (1-indexed). Default is 1.
  *       - in: query
- *         name: limit
+ *         name: title
  *         schema:
- *           type: integer
- *           default: 20
- *         description: Number of movies to return
+ *           type: string
+ *         description: Filter by movie title (case-insensitive partial match)
  *     responses:
  *       200:
- *         description: List of movies with pagination info
+ *         description: List of movies with pagination metadata
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 data:
+ *                 movies:
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Movie'
  *                 pagination:
  *                   type: object
  *                   properties:
- *                     skip:
+ *                     totalMovies:
  *                       type: integer
+ *                       description: Total number of movies in database
+ *                     page:
+ *                       type: integer
+ *                       description: Current page number
  *                     limit:
  *                       type: integer
- *                     count:
+ *                       description: Number of items per page
+ *                     totalPages:
  *                       type: integer
+ *                       description: Total number of pages
+ *                     next_url:
+ *                       type: string
+ *                       nullable: true
+ *                       description: URL to the next page, or null if on last page
+ *                     prev_url:
+ *                       type: string
+ *                       nullable: true
+ *                       description: URL to the previous page, or null if on first page
+ *       404:
+ *         description: No movies found in database
  *       500:
  *         description: Server error
  */

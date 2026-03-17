@@ -11,7 +11,7 @@ export class languageModel {
   async getLanguages() {
     const languages = await Language.find()
 
-    if (!languages) {
+    if (languages.length === 0) {
       throw new Error('Languages not found')
     }
 

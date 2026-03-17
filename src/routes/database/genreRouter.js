@@ -20,6 +20,8 @@ const controller = new genreController()
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Genre'
+ *       404:
+ *         description: Genres not found
  *       500:
  *         description: Server error
  */

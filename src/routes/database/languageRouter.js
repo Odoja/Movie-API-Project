@@ -21,6 +21,8 @@ const controller = new languageController()
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Language'
+ *       404:
+ *         description: Languages not found
  *       500:
  *         description: Server error
  */

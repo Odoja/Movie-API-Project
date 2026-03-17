@@ -2,7 +2,7 @@
 
 ## Project Name
 
-*Replace with the name of your API project.*
+API Design Assignment
 
 ## Objective
 
@@ -14,7 +14,7 @@ Choose a dataset (10000+ data points) that interests you — it should include a
 
 ## Implementation Type
 
-*Specify: REST or GraphQL*
+REST
 
 ## Links and Testing
 
@@ -132,15 +132,15 @@ See [all requirements in Issues](../../issues/). Close issues as you implement t
 | Data acquisition — choose and document a dataset (1000+ data points) | [#1](../../issues/1) | ✅ |
 | Full CRUD for primary resource, read-only for secondary resources | [#2](../../issues/2) | ✅ |
 | JWT authentication for write operations | [#3](../../issues/3) | ✅ |
-| Error handling (400, 401, 404 with consistent format) | [#4](../../issues/4) | :white_large_square: |
+| Error handling (400, 401, 404 with consistent format) | [#4](../../issues/4) | ✅ |
 | Filtering and pagination for large result sets | [#17](../../issues/17) | :white_large_square: |
 
 ### Functional Requirements — REST
 
 | Requirement | Issue | Status |
 |---|---|---|
-| RESTful endpoints with proper HTTP methods and status codes | [#12](../../issues/12) | :white_large_square: |
-| HATEOAS (hypermedia links in responses) | [#13](../../issues/13) | :white_large_square: |
+| RESTful endpoints with proper HTTP methods and status codes | [#12](../../issues/12) | ✅ |
+| HATEOAS (hypermedia links in responses) | [#13](../../issues/13) | ✅ |
 
 ### Functional Requirements — GraphQL
 

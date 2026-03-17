@@ -11,7 +11,7 @@ export class genreModel {
   async getGenres() {
     const genres = await Genre.find()
 
-    if (!genres) {
+    if (genres.length === 0) {
       throw new Error('Genres not found')
     }
 

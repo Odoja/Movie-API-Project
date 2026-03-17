@@ -4,8 +4,11 @@ const errorStatusMap = {
   'Unauthorized': 401,
   'Forbidden': 403,
   'Movie not found': 404,
+  'Movies not found': 404,
   'Genre not found': 404,
+  'Genres not found': 404,
   'Language not found': 404,
+  'Languages not found': 404,
   'Username already in use': 409,
   'Email already in use': 409,
 }
