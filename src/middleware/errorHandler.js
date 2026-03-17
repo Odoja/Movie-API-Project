@@ -1,8 +1,8 @@
 import http from 'node:http'
 
 const errorStatusMap = {
-  'Unauthorized': 401,
-  'Forbidden': 403,
+  Unauthorized: 401,
+  Forbidden: 403,
   'Movie not found': 404,
   'Movies not found': 404,
   'Genre not found': 404,
@@ -10,7 +10,7 @@ const errorStatusMap = {
   'Language not found': 404,
   'Languages not found': 404,
   'Username already in use': 409,
-  'Email already in use': 409,
+  'Email already in use': 409
 }
 
 /**
@@ -23,6 +23,7 @@ const errorStatusMap = {
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
  * @param {Function} _next - Express next middleware function.
+ * @returns {void} Sends a JSON response with error details and appropriate status code.
  */
 export const errorHandler = (err, req, res, _next) => {
   console.error(err.message, { error: err })
@@ -53,14 +54,14 @@ export const errorHandler = (err, req, res, _next) => {
 
   if (process.env.NODE_ENV === 'production') {
     return res.status(status).json({
-      status: status,
+      status,
       message: http.STATUS_CODES[status]
     })
   }
 
   // In development, include error details.
   res.status(status).json({
-    status: status,
+    status,
     message: err.message
   })
 }

@@ -11,7 +11,7 @@ export class JWT {
    * @param {string} secret - The secret key used for verifying the JWT.
    * @returns {Promise<object>} A Promise that resolves to the user object extracted from the JWT payload.
    */
-  static async decodeUser(token, secret) {
+  static async decodeUser (token, secret) {
     return new Promise((resolve, reject) => {
       jwt.verify(token, secret, { algorithm: 'HS256' }, (error, decoded) => {
         if (error) {
@@ -40,7 +40,7 @@ export class JWT {
    * @param {string|number} expiresIn - The expiration time for the JWT (e.g., '1h', '7d').
    * @returns {Promise<string>} A Promise that resolves to the generated JWT.
    */
-  static async encodeUser(user, secret, expiresIn) {
+  static async encodeUser (user, secret, expiresIn) {
     const payload = {
       sub: user._id || user.id,
       firstName: user.firstName,

@@ -1,7 +1,7 @@
 import { JWT } from '../../utils/JWT.js'
-import { userModel } from '../../models/user/userModel.js'
+import { UserModel } from '../../models/user/userModel.js'
 
-const userM = new userModel()
+const userM = new UserModel()
 
 /**
  * Encapsulates the user controller.
@@ -14,7 +14,7 @@ export class UserController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async login(req, res, next) {
+  async login (req, res, next) {
     try {
       const user = await userM.authenticate(req.body.username, req.body.password)
 
@@ -35,7 +35,7 @@ export class UserController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async register(req, res, next) {
+  async register (req, res, next) {
     try {
       const user = await userM.register(req.body)
 

@@ -1,8 +1,8 @@
 import express from 'express'
-import { languageController } from '../../controllers/database/languageController.js'
+import { LanguageController } from '../../controllers/database/languageController.js'
 
 export const router = express.Router()
-const controller = new languageController()
+const controller = new LanguageController()
 
 /**
  * @swagger

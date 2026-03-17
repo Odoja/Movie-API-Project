@@ -1,14 +1,15 @@
-import { Language } from "../schemes/languageSchema.js"
+import { Language } from '../schemes/languageSchema.js'
 
-export class languageModel {
-  constructor() { }
-
+/**
+ * Languagemodel class.
+ */
+export class LanguageModel {
   /**
    * Fetches all languages.
    *
    * @returns {Promise<Array>} - Array of language objects.
    */
-  async getLanguages() {
+  async getLanguages () {
     const languages = await Language.find()
 
     if (languages.length === 0) {
@@ -22,9 +23,9 @@ export class languageModel {
    * Fetches a single language by ID.
    *
    * @param {string} id - The language ID.
-   * @returns {Promise<Object>} - Language object.
+   * @returns {Promise<object>} - Language object.
    */
-  async getLanguageById(id) {
+  async getLanguageById (id) {
     const language = await Language.findById(id)
 
     if (!language) {

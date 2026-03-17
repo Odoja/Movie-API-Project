@@ -1,14 +1,15 @@
-import { Genre } from "../schemes/genreSchema.js"
+import { Genre } from '../schemes/genreSchema.js'
 
-export class genreModel {
-  constructor() { }
-
+/**
+ * Genremodel class.
+ */
+export class GenreModel {
   /**
    * Fetches all genres.
    *
    * @returns {Promise<Array>} - Array of genre objects.
    */
-  async getGenres() {
+  async getGenres () {
     const genres = await Genre.find()
 
     if (genres.length === 0) {
@@ -22,9 +23,9 @@ export class genreModel {
    * Fetches a single genre by ID.
    *
    * @param {string} id - The genre ID.
-   * @returns {Promise<Object>} - Genre object.
+   * @returns {Promise<object>} - Genre object.
    */
-  async getGenreById(id) {
+  async getGenreById (id) {
     const genre = await Genre.findById(id)
 
     if (!genre) {

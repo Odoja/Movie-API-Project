@@ -1,27 +1,28 @@
 import { User } from '../schemes/userSchema.js'
 
-export class userModel {
-  constructor() { }
-
+/**
+ * Usermodel class.
+ */
+export class UserModel {
   /**
    * Authenticates a user with username and password.
    *
    * @param {string} username - The username.
    * @param {string} password - The password.
-   * @returns {Promise<Object>} - Authenticated user object.
+   * @returns {Promise<object>} - Authenticated user object.
    */
-  async authenticate(username, password) {
+  async authenticate (username, password) {
     const user = await User.authenticate(username, password)
     return user.toObject()
   }
 
   /**
    * Registers a new user account.
-   * 
-   * @param {Object} data - User data.
-   * @returns {Promise<Object>} - Created user object.
+   *
+   * @param {object} data - User data.
+   * @returns {Promise<object>} - Created user object.
    */
-  async register(data) {
+  async register (data) {
     const existingUsername = await User.findOne({ username: data.username })
     const existingEmail = await User.findOne({ email: data.email })
 

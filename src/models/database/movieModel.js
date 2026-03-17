@@ -1,17 +1,18 @@
 import { Movie } from '../schemes/movieSchema.js'
 
-export class movieModel {
-  constructor() { }
-
+/**
+ * Moviemodel class.
+ */
+export class MovieModel {
   /**
    * Fetches movies with pagination.
    *
    * @param {number} skip - Number of documents to skip
    * @param {number} limit - Number of documents to return
-   * @param {Object} query - MongoDB query object
-   * @returns {Promise<Object>} - Object with movies array and total count.
+   * @param {object} query - MongoDB query object
+   * @returns {Promise<object>} - Object with movies array and total count.
    */
-  async getMovies(skip = 0, limit = 20, query = {}) {
+  async getMovies (skip = 0, limit = 20, query = {}) {
     const total = await Movie.countDocuments(query)
     const movies = await Movie.find(query)
       .skip(skip)
@@ -30,9 +31,9 @@ export class movieModel {
    * Fetches a single movie by ID.
    *
    * @param {string} id - The movie ID.
-   * @returns {Promise<Object>} - Movie object.
+   * @returns {Promise<object>} - Movie object.
    */
-  async getMovieById(id) {
+  async getMovieById (id) {
     const movie = await Movie.findById(id)
       .populate('genres')
       .populate('language')
@@ -46,11 +47,11 @@ export class movieModel {
 
   /**
    * Creates a new movie.
-   * 
+   *
    * @param {string} data - Movie data.
-   * @returns {Promise<Object>} - Created movie object.
+   * @returns {Promise<object>} - Created movie object.
    */
-  async createMovie(data) {
+  async createMovie (data) {
     const movie = new Movie(data)
 
     await movie.save()
@@ -62,12 +63,12 @@ export class movieModel {
 
   /**
    * Updates an existing movie.
-   * 
+   *
    * @param {string} id - The movie ID.
    * @param {Object} data - The movie data to update.
-   * @returns {Promise<Object>} - The updated movie object.
+   * @returns {Promise<object>} - The updated movie object.
    */
-  async updateMovie(id, data) {
+  async updateMovie (id, data) {
     const movie = await Movie.findByIdAndUpdate(id, data, { new: true })
       .populate('genres')
       .populate('language')
@@ -81,10 +82,10 @@ export class movieModel {
 
   /**
    * Deletes a movie.
-   * 
+   *
    * @param {string} id - The movie ID.
    */
-  async deleteMovie(id) {
+  async deleteMovie (id) {
     const result = await Movie.findByIdAndDelete(id)
 
     if (!result) {

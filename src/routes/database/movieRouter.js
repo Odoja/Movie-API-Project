@@ -1,9 +1,9 @@
 import express from 'express'
-import { movieController } from '../../controllers/database/movieController.js'
+import { MovieController } from '../../controllers/database/movieController.js'
 import { authenticateJWT, requireBody, checkOwnership } from '../../middleware/auth.js'
 
 export const router = express.Router()
-const controller = new movieController()
+const controller = new MovieController()
 
 /**
  * @swagger
@@ -213,7 +213,7 @@ router.put('/:id',
 /**
  * @swagger
  * /movies/{id}:
- *   delete:
+ *    delete:
  *     summary: Delete a movie
  *     description: Deletes a movie (requires authentication and ownership)
  *     tags: [Movies]

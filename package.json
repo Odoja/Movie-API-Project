@@ -1,9 +1,9 @@
 {
   "name": "assignment-api-design",
   "version": "1.0.0",
-  "description": "*Replace with the name of your API project.*",
+  "description": "API project",
   "type": "module",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon --inspect --env-file=.env src/server.js",
@@ -27,6 +27,8 @@
     "validator": "^13.15.26"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "@lnu/eslint-config": "^1.1.10",
+    "eslint": "^8.57.1"
   }
 }

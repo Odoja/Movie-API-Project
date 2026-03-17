@@ -7,7 +7,7 @@ import { generateLink } from './hateoas.js'
  * @param {object} req - Express request object.
  * @returns {object} - Formatted movie object.
  */
-export function formatMovie(movie, req) {
+export function formatMovie (movie, req) {
   const movieId = movie._id.toString()
   return {
     id: movieId,
@@ -31,11 +31,12 @@ export function formatMovie(movie, req) {
 
 /**
  * Formats a genre document for API response.
- * @param {object} genre 
+ *
+ * @param {object} genre - Genre document from database.
  * @param {object} req - Express request object.
  * @returns {object} - Formatted genre object.
  */
-export function formatGenre(genre, req) {
+export function formatGenre (genre, req) {
   const genreId = genre._id.toString()
   return {
     id: genreId,
@@ -48,12 +49,12 @@ export function formatGenre(genre, req) {
 
 /**
  * Formats a language document for API response.
- * 
- * @param {object} language 
+ *
+ * @param {object} language - Language document from database.
  * @param {object} req - Express request object.
  * @returns {object} - Formatted language object.
  */
-export function formatLanguage(language, req) {
+export function formatLanguage (language, req) {
   const languageId = language._id.toString()
   return {
     id: languageId,

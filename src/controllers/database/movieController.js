@@ -1,13 +1,15 @@
-import { movieModel } from "../../models/database/movieModel.js"
+import { MovieModel } from '../../models/database/movieModel.js'
 import { formatMovie } from '../../utils/formatters.js'
 import { Pagination } from '../../utils/pagination.js'
-import { titleQuery } from "../../utils/filtering.js"
+import { titleQuery } from '../../utils/filtering.js'
 
-const movieM = new movieModel()
+const movieM = new MovieModel()
 const pagination = new Pagination()
 
-export class movieController {
-
+/**
+ * Moviecontroller class.
+ */
+export class MovieController {
   /**
    * Provide req.doc to the route if :id is present.
    *
@@ -16,7 +18,7 @@ export class movieController {
    * @param {Function} next - Express next middleware function.
    * @param {string} id - The value of the id for the resource to load.
    */
-  async loadMovie(req, res, next, id) {
+  async loadMovie (req, res, next, id) {
     try {
       const movie = await movieM.getMovieById(id)
       req.doc = movie
@@ -33,7 +35,7 @@ export class movieController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getMovies(req, res, next) {
+  async getMovies (req, res, next) {
     try {
       const page = parseInt(req.query.page) || 1
       const limit = 20
@@ -57,13 +59,11 @@ export class movieController {
   /**
    * Sends a JSON response containing a movie.
    *
-   * Public, no ownership check is performed.
-   *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async getMovieById(req, res, next) {
+  async getMovieById (req, res, next) {
     try {
       const movie = await movieM.getMovieById(req.params.id)
       res.json(formatMovie(movie, req))
@@ -79,7 +79,7 @@ export class movieController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async createMovie(req, res, next) {
+  async createMovie (req, res, next) {
     try {
       const movieData = { ...req.body, owner: req.user.id }
       const movie = await movieM.createMovie(movieData)
@@ -97,7 +97,7 @@ export class movieController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async updateMovie(req, res, next) {
+  async updateMovie (req, res, next) {
     try {
       const allowedFields = ['title', 'releaseDate', 'overview', 'genres', 'language', 'posterUrl']
 
@@ -126,7 +126,7 @@ export class movieController {
    * @param {object} res - Express response object.
    * @param {Function} next - Express next middleware function.
    */
-  async deleteMovie(req, res, next) {
+  async deleteMovie (req, res, next) {
     try {
       await movieM.deleteMovie(req.params.id)
       res.status(204).end()
