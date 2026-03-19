@@ -1,5 +1,4 @@
 import { Movie } from '../schemes/movieSchema.js'
-
 /**
  * Moviemodel class.
  */
@@ -65,11 +64,11 @@ export class MovieModel {
    * Updates an existing movie.
    *
    * @param {string} id - The movie ID.
-   * @param {Object} data - The movie data to update.
+   * @param {object} data - The movie data to update.
    * @returns {Promise<object>} - The updated movie object.
    */
   async updateMovie (id, data) {
-    const movie = await Movie.findByIdAndUpdate(id, data, { new: true })
+    const movie = await Movie.findByIdAndUpdate(id, data, { new: true, runValidators: true })
       .populate('genres')
       .populate('language')
 

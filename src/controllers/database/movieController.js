@@ -101,17 +101,15 @@ export class MovieController {
     try {
       const allowedFields = ['title', 'releaseDate', 'overview', 'genres', 'language', 'posterUrl']
 
-      // Only update fields that are provided in the request
+      // Filter only allowed fields from request body
+      const updateData = {}
       for (const field of allowedFields) {
         if (field in req.body) {
-          req.doc[field] = req.body[field]
+          updateData[field] = req.body[field]
         }
       }
 
-      if (req.doc.isModified()) {
-        await req.doc.validate()
-        await req.doc.save()
-      }
+      await movieM.updateMovie(req.params.id, updateData)
 
       res.status(204).end()
     } catch (error) {

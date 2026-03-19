@@ -31,21 +31,22 @@ export const errorHandler = (err, req, res, _next) => {
   // Handle Mongoose ValidationError
   if (err.name === 'ValidationError') {
     const errors = Object.keys(err.errors)
-      .map(field => field.split('.')[0])
+      .map(field => err.errors[field].message)
       .join(', ')
 
     return res.status(400).json({
       status: 400,
-      message: 'Invalid input',
-      field: errors
+      message: errors
     })
   }
 
   // Handle Mongoose CastError
   if (err.name === 'CastError') {
-    return res.status(404).json({
-      status: 404,
-      message: 'Resource not found'
+    const field = err.path.split('.')[0]
+    return res.status(400).json({
+      status: 400,
+      message: 'Invalid input',
+      field
     })
   }
 
@@ -55,7 +56,7 @@ export const errorHandler = (err, req, res, _next) => {
   if (process.env.NODE_ENV === 'production') {
     return res.status(status).json({
       status,
-      message: http.STATUS_CODES[status]
+      message: err.message
     })
   }
 
