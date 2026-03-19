@@ -45,16 +45,51 @@ const controller = new UserController()
  *         content:
  *           application/json:
  *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid input - validation failed
+ *         content:
+ *           application/json:
+ *             schema:
  *               type: object
  *               properties:
- *                 id:
+ *                 status:
+ *                   type: integer
+ *                 message:
  *                   type: string
- *                 username:
- *                   type: string
- *       400:
- *         description: Invalid input
+ *             examples:
+ *               invalidEmail:
+ *                 value:
+ *                   status: 400
+ *                   message: "Please provide a valid email address."
+ *               shortPassword:
+ *                 value:
+ *                   status: 400
+ *                   message: "The password must be of minimum length 10 characters."
+ *               invalidUsername:
+ *                 value:
+ *                   status: 400
+ *                   message: "Please provide a valid username."
  *       409:
- *         description: Username or email already in use
+ *         description: Conflict - Username or email already in use
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             examples:
+ *               usernameInUse:
+ *                 value:
+ *                   status: 409
+ *                   message: "Username already in use"
+ *               emailInUse:
+ *                 value:
+ *                   status: 409
+ *                   message: "Email already in use"
  */
 router.post('/register', (req, res, next) => controller.register(req, res, next))
 
@@ -92,9 +127,19 @@ router.post('/register', (req, res, next) => controller.register(req, res, next)
  *                 access_token:
  *                   type: string
  *                   description: JWT token
- *       400:
- *         description: Invalid input
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized - Wrong username or password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 401
+ *               message: "Unauthorized"
  */
 router.post('/login', (req, res, next) => controller.login(req, res, next))

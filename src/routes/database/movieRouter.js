@@ -91,7 +91,7 @@ router.get('/',
  * /movies/{id}:
  *   get:
  *     summary: Get a single movie
- *     description: Retrieves a specific movie by ID with genres and language information
+ *     description: Retrieves a specific movie by ID with genres and language information. You can get the ID required above from GET /movies.
  *     tags: [Movies]
  *     parameters:
  *       - in: path
@@ -146,7 +146,7 @@ router.get('/:id',
  * /movies:
  *   post:
  *     summary: Create a new movie
- *     description: Creates a new movie (requires authentication). Popularity, vote count, and vote average are automatically set to 0.
+ *     description: Creates a new movie (requires authentication). Popularity, vote count, and vote average are automatically set to 0. You can get the ID required to set the Genres and Language using the GET /genres and GET /languages that's below.
  *     tags: [Movies]
  *     security:
  *       - BearerAuth: []
@@ -239,7 +239,7 @@ router.post('/',
  * /movies/{id}:
  *   put:
  *     summary: Update a movie
- *     description: Updates an existing movie (requires authentication and ownership)
+ *     description: Updates an existing movie (requires authentication and ownership). Only the movie creator can update their movie. All fields are optional - only provide the fields you want to update. You can get the IDs required to set the Genres and Language using the GET /genres and GET /languages endpoints below.
  *     tags: [Movies]
  *     security:
  *       - BearerAuth: []
@@ -359,7 +359,7 @@ router.put('/:id',
  * /movies/{id}:
  *    delete:
  *     summary: Delete a movie
- *     description: Deletes a movie (requires authentication and ownership)
+ *     description: Deletes a movie (requires authentication and ownership). Only the movie creator can delete their movie. This action is permanent and cannot be undone. You can get the ID required above from GET /movies.
  *     tags: [Movies]
  *     security:
  *       - BearerAuth: []
