@@ -12,6 +12,14 @@ import { User } from '../src/models/schemes/userSchema.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const csvPath = path.join(__dirname, '../public/data/mymoviedb.csv')
 
+/**
+ * Seeds the database with movies from the CSV file.
+ *
+ * - Connects to MongoDB using the connection string from environment variables.
+ * - Creates an admin user if it doesn't exist for data ownership.
+ * - Parses the CSV file and extracts movies, genres, and languages.
+ * - Upserts genres and languages to avoid duplicates.
+ */
 async function seedDatabase () {
   try {
     await connectToDatabase(process.env.DB_CONNECTION_STRING)
@@ -79,6 +87,9 @@ async function seedDatabase () {
 
     // Transform and insert movies in batches
     const batchSize = 1000
+    let totalInserted = 0
+    let totalSkipped = 0
+
     for (let i = 0; i < movies.length; i += batchSize) {
       const batch = movies.slice(i, i + batchSize)
 
@@ -100,11 +111,35 @@ async function seedDatabase () {
         }
       })
 
-      await Movie.insertMany(movieDocs)
-      console.log(`Inserted batch ${Math.floor(i / batchSize) + 1} (${batch.length} movies)`)
+      // Check which movies already exist to avoid duplicates
+      const existingMovies = await Movie.find({
+        $or: movieDocs.map(doc => ({
+          title: doc.title,
+          releaseDate: doc.releaseDate
+        }))
+      }, { title: 1, releaseDate: 1 })
+
+      const existingSet = new Set(
+        existingMovies.map(m => `${m.title}|${m.releaseDate}`)
+      )
+
+      // Filter out duplicates
+      const newMovies = movieDocs.filter(doc =>
+        !existingSet.has(`${doc.title}|${doc.releaseDate}`)
+      )
+
+      if (newMovies.length > 0) {
+        await Movie.insertMany(newMovies)
+        totalInserted += newMovies.length
+        totalSkipped += batch.length - newMovies.length
+        console.log(`Inserted batch ${Math.floor(i / batchSize) + 1} (${newMovies.length} new movies, ${batch.length - newMovies.length} skipped as duplicates)`)
+      } else {
+        totalSkipped += batch.length
+        console.log(`Batch ${Math.floor(i / batchSize) + 1}: All ${batch.length} movies already exist, skipped`)
+      }
     }
 
-    console.log(`✓ Successfully seeded ${movies.length} movies!`)
+    console.log(`Successfully seeded database! ${totalInserted} new movies added, ${totalSkipped} duplicates skipped.`)
     process.exit(0)
   } catch (error) {
     console.error('Error seeding database:', error.message)

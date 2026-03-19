@@ -79,7 +79,7 @@ Dataset with +9000 movies
 Create a `.env` file in the project root with the following variables:
 
 ```env
-DB_CONNECTION_STRING=mongodb://localhost:27017/movies
+DB_CONNECTION_STRING=mongodb://localhost:27018/Local-Movie-API-Project
 ```
 
 ### Running the Seed Script
@@ -90,11 +90,30 @@ To populate the database with the complete movie dataset (9827 movies from the C
 npm run seed
 ```
 
+**Prerequisites:**
+- MongoDB must be running locally (default: `localhost:27018` or configure in `.env`)
+- The `.env` file must have correct `DB_CONNECTION_STRING` pointing to your MongoDB instance
+
 **What the script does:**
-- Connects to MongoDB using your `DB_CONNECTION_STRING`
+- Connects to MongoDB using `DB_CONNECTION_STRING` from `.env`
 - Reads `public/data/mymoviedb.csv` (9827 movies)
-- Inserts all movies in optimized batches of 1000
-- Logs progress throughout the seeding process
+- Checks for existing movies (by title + release date) to prevent duplicates
+- Inserts only new movies in optimized batches of 1000
+- Logs progress and duplicate detection for each batch
+- Safe to run multiple times — duplicates are skipped
+
+**Expected output (first run):**
+```
+Connected to MongoDB
+Parsed 9827 movies from CSV
+Upserted 19 genres
+Upserted 43 languages
+Inserted batch 1 (1000 new movies, 0 skipped as duplicates)
+Inserted batch 2 (1000 new movies, 0 skipped as duplicates)
+...
+Inserted batch 10 (827 new movies, 0 skipped as duplicates)
+✓ Successfully seeded database! 9827 new movies added, 0 duplicates skipped.
+```
 
 **Expected output:**
 ```
@@ -102,10 +121,10 @@ Connected to MongoDB
 Parsed 9827 movies from CSV
 Upserted 19 genres
 Upserted 43 languages
-Inserted batch 1 (1000 movies)
-Inserted batch 2 (1000 movies)
+Batch 1: All 1000 movies already exist, skipped
+Batch 2: All 1000 movies already exist, skipped
 ...
-✓ Successfully seeded 9827 movies!
+✓ Successfully seeded database! 0 new movies added, 9827 duplicates skipped.
 ```
 
 ## Core Technologies Used

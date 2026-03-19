@@ -55,7 +55,7 @@ schema.pre('save', async function () {
  *
  * @param {string} username - The username.
  * @param {string} password - The password.
- * @returns {Promise<UserModel>} A promise that resolves with the user if authentication was successful.
+ * @returns {Promise<User>} A promise that resolves with the user if authentication was successful.
  */
 schema.statics.authenticate = async function (username, password) {
   const userDocument = await this.findOne({ username })

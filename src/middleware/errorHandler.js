@@ -1,5 +1,3 @@
-import http from 'node:http'
-
 const errorStatusMap = {
   Unauthorized: 401,
   Forbidden: 403,
