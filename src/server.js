@@ -25,14 +25,14 @@ try {
   app.use(express.json({ limit: '500kb' }))
 
   // Swagger API documentation
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     swaggerOptions: {
       persistAuthorization: true
     }
   }))
 
   // Register routes.
-  app.use('/', router)
+  app.use('/api', router)
 
   // Error handler.
   app.use(errorHandler)

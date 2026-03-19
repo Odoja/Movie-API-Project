@@ -11,7 +11,7 @@ const controller = new LanguageController()
  *     tags:
  *       - Languages
  *     summary: Get all languages
- *     description: Retrieve a list of all available languages in the system
+ *     description: Retrieves a list of all available movie languages
  *     responses:
  *       200:
  *         description: A list of languages
@@ -23,8 +23,32 @@ const controller = new LanguageController()
  *                 $ref: '#/components/schemas/Language'
  *       404:
  *         description: Languages not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 404
+ *               message: "Languages not found"
  *       500:
- *         description: Server error
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 500
+ *               message: "Internal Server Error"
  */
 router.get('/',
   (req, res, next) => controller.getLanguages(req, res, next)
@@ -37,7 +61,7 @@ router.get('/',
  *     tags:
  *       - Languages
  *     summary: Get a single language
- *     description: Retrieve details of a specific language by its ID
+ *     description: Retrieves a specific language by ID, you can get the ID from above using the GET /languages
  *     parameters:
  *       - in: path
  *         name: id
@@ -54,8 +78,32 @@ router.get('/',
  *               $ref: '#/components/schemas/Language'
  *       404:
  *         description: Language not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 404
+ *               message: "Language not found"
  *       500:
- *         description: Server error
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 500
+ *               message: "Internal Server Error"
  */
 router.get('/:id',
   (req, res, next) => controller.getLanguageById(req, res, next)

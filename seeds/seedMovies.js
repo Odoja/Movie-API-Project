@@ -6,22 +6,22 @@ import { connectToDatabase } from '../src/config/mongoose.js'
 import { Movie } from '../src/models/schemes/movieSchema.js'
 import { Genre } from '../src/models/schemes/genreSchema.js'
 import { Language } from '../src/models/schemes/languageSchema.js'
-import { UserModel } from '../src/models/schemes/userSchema.js'
+import { User } from '../src/models/schemes/userSchema.js'
 
 // Get directory paths
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const csvPath = path.join(__dirname, '../public/data/mymoviedb.csv')
 
-async function seedDatabase() {
+async function seedDatabase () {
   try {
     await connectToDatabase(process.env.DB_CONNECTION_STRING)
     console.log('Connected to MongoDB')
 
     // Create or get admin user
-    let adminUser = await UserModel.findOne({ username: 'admin' })
+    let adminUser = await User.findOne({ username: 'admin' })
 
     if (!adminUser) {
-      adminUser = await UserModel.create({
+      adminUser = await User.create({
         username: 'admin',
         password: 'AdminPassword123!',
         email: 'admin@example.com',
@@ -85,7 +85,7 @@ async function seedDatabase() {
       const movieDocs = batch.map(row => {
         const genreNames = row.Genre ? row.Genre.split(',').map(g => g.trim()) : []
         const genreIds = genreNames.map(name => genreMap.get(name)).filter(id => id)
-        
+
         return {
           releaseDate: row.Release_Date || '',
           title: row.Title || '',

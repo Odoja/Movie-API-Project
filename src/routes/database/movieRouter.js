@@ -26,7 +26,7 @@ const controller = new MovieController()
  *         description: Filter by movie title (case-insensitive partial match)
  *     responses:
  *       200:
- *         description: List of movies with pagination metadata
+ *         description: List of movies with metadata
  *         content:
  *           application/json:
  *             schema:
@@ -36,33 +36,51 @@ const controller = new MovieController()
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Movie'
- *                 pagination:
+ *                 metaData:
  *                   type: object
  *                   properties:
  *                     totalMovies:
  *                       type: integer
- *                       description: Total number of movies in database
  *                     page:
  *                       type: integer
- *                       description: Current page number
  *                     limit:
  *                       type: integer
- *                       description: Number of items per page
  *                     totalPages:
  *                       type: integer
- *                       description: Total number of pages
  *                     next_url:
  *                       type: string
  *                       nullable: true
- *                       description: URL to the next page, or null if on last page
  *                     prev_url:
  *                       type: string
  *                       nullable: true
- *                       description: URL to the previous page, or null if on first page
  *       404:
- *         description: No movies found in database
+ *         description: Movies not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 404
+ *               message: "Movies not found"
  *       500:
- *         description: Server error
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 500
+ *               message: "Internal Server Error"
  */
 router.get('/',
   (req, res, next) => controller.getMovies(req, res, next)
@@ -91,8 +109,32 @@ router.get('/',
  *               $ref: '#/components/schemas/Movie'
  *       404:
  *         description: Movie not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 404
+ *               message: "Movie not found"
  *       500:
- *         description: Server error
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 500
+ *               message: "Internal Server Error"
  */
 router.get('/:id',
   (req, res, next) => controller.loadMovie(req, res, next, req.params.id),
@@ -145,8 +187,47 @@ router.get('/:id',
  *               $ref: '#/components/schemas/Movie'
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 400
+ *               message: "Invalid input"
+ *               field: "Title, releaseDate, overview, genres, language"
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized - missing or invalid JWT token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 401
+ *               message: "Unauthorized"
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 500
+ *               message: "Internal Server Error"
  */
 router.post('/',
   authenticateJWT,
@@ -195,12 +276,75 @@ router.post('/',
  *         description: Movie updated successfully
  *       400:
  *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 400
+ *               message: "Invalid input"
+ *               field: "Title, releaseDate, overview, genres, language"
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized - missing or invalid JWT token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 401
+ *               message: "Unauthorized"
  *       403:
- *         description: Forbidden
+ *         description: Forbidden - The logged-in user does not have the necessary rights to delete this movie.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 401
+ *               message: "Forbidden"
  *       404:
  *         description: Movie not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 404
+ *               message: "Movie not found"
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 500
+ *               message: "Internal Server Error"
  */
 router.put('/:id',
   authenticateJWT,
@@ -230,11 +374,61 @@ router.put('/:id',
  *       204:
  *         description: Movie deleted successfully
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized - missing or invalid JWT token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 401
+ *               message: "Unauthorized"
  *       403:
- *         description: Forbidden
+ *         description: Forbidden - The logged-in user does not have the necessary rights to delete this movie.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 401
+ *               message: "Forbidden"
  *       404:
  *         description: Movie not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 404
+ *               message: "Movie not found"
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: 500
+ *               message: "Internal Server Error"
  */
 router.delete('/:id',
   authenticateJWT,
