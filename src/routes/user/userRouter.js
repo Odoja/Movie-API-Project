@@ -58,18 +58,30 @@ const controller = new UserController()
  *                 message:
  *                   type: string
  *             examples:
- *               invalidEmail:
+ *               Invalid Email:
  *                 value:
  *                   status: 400
  *                   message: "Please provide a valid email address."
- *               shortPassword:
- *                 value:
- *                   status: 400
- *                   message: "The password must be of minimum length 10 characters."
- *               invalidUsername:
+ *               Invalid Username:
  *                 value:
  *                   status: 400
  *                   message: "Please provide a valid username."
+ *               Invalid FirstName:
+ *                 value:
+ *                   status: 400
+ *                   message: "First name is required."
+ *               Invalid LastName:
+ *                 value:
+ *                   status: 400
+ *                   message: "Last name is required."
+ *               Too Short Password:
+ *                 value:
+ *                   status: 400
+ *                   message: "The password must be of minimum length 10 characters."
+ *               Too Long Password:
+ *                 value:
+ *                   status: 400
+ *                   message: "The password must be of maximum length 256 characters."
  *       409:
  *         description: Conflict - Username or email already in use
  *         content:
@@ -82,11 +94,11 @@ const controller = new UserController()
  *                 message:
  *                   type: string
  *             examples:
- *               usernameInUse:
+ *               Username In Use:
  *                 value:
  *                   status: 409
  *                   message: "Username already in use"
- *               emailInUse:
+ *               Email In Use:
  *                 value:
  *                   status: 409
  *                   message: "Email already in use"

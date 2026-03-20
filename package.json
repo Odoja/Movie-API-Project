@@ -9,7 +9,8 @@
     "dev": "nodemon --inspect --env-file=.env src/server.js",
     "seed": "node --env-file=.env seeds/seedMovies.js",
     "lint": "npx eslint ./src ./public || exit 0",
-    "lint:fix": "npx eslint ./src ./public --fix || exit 0"
+    "lint:fix": "npx eslint ./src ./public --fix || exit 0",
+    "test": "newman run postman-collection.json -e production.postman_environment.json --insecure"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "@lnu/eslint-config": "^1.1.10",
     "eslint": "^8.57.1",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "newman": "^6.0.0"
   }
 }

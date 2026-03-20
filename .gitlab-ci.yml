@@ -1,0 +1,87 @@
+stages:
+  - install
+  - lint
+  - test
+
+before_script:
+  - echo "Starting pipeline for Movie API..."
+
+install_dependencies:
+  stage: install
+  image: node:20
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+  cache:
+    paths:
+      - node_modules/
+
+lint:
+  stage: lint
+  image: node:20
+  dependencies:
+    - install_dependencies
+  script:
+    - npm run lint
+
+api_tests:
+  stage: test
+  image: node:20
+  dependencies:
+    - install_dependencies
+  services:
+    - mongo:7
+  variables:
+    MONGO_URI: "mongodb://mongo:27018/assignmentdb"
+    JWT_SECRET: "test-secret-key"
+    ACCESS_TOKEN_LIFE: "1h"
+    PORT: "3000"
+  before_script:
+    - apt-get update && apt-get install -y wait-for-it
+    - npm ci
+  script:
+    - echo "Starting API server..."
+    - npm start &
+    - sleep 5
+    - echo "Running API tests with Newman..."
+    - npx newman run postman-collection.json -e production.postman_environment.json --reporters cli,json
+  after_script:
+    - echo "Tests completed"
+  artifacts:
+    reports:
+      junit: newman-results.xml
+    when: always
+  retry:
+    max: 1
+
+pages:
+  stage: test
+  image: node:20
+  dependencies:
+    - install_dependencies
+  services:
+    - mongo:7
+  variables:
+    MONGO_URI: "mongodb://mongo:27018/assignmentdb"
+    JWT_SECRET: "test-secret-key"
+    ACCESS_TOKEN_LIFE: "1h"
+    PORT: "3000"
+  before_script:
+    - npm ci
+  script:
+    - echo "Starting API server for coverage report..."
+    - npm start &
+    - sleep 5
+    - npx newman run postman-collection.json -e production.postman_environment.json --reporters html,json --reporter-html-export test-results.html --reporter-json-export newman-results.json
+    - mkdir -p public
+    - mv test-results.html public/test-results.html
+    - mv newman-results.json public/test-results.json
+  artifacts:
+    paths:
+      - public
+    expire_in: 1 month
+  only:
+    - main
