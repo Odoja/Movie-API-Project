@@ -20,9 +20,11 @@ REST
 
 | | URL / File |
 |---|---|
-| **Production API** | *...* |
-| **API Documentation** | *...* |
-| **GraphQL Playground** (GraphQL only) | *...* |
+| **Production API** | https://cu0203.camp.lnu.se/api |
+| **Movies** |`/movies`|
+| **Genres** |`/genres`|
+| **Languages** |`/languages`|
+| **API Documentation** | https://cu0203.camp.lnu.se/api/api-docs/#/ |
 | **Postman Collection** | `*.postman_collection.json` |
 | **Production Environment** | `production.postman_environment.json` |
 
@@ -31,7 +33,7 @@ REST
 1. **CI/CD pipeline** — check the pipeline output in GitLab for test results.
 2. **Run manually** — no setup needed:
    ```
-   npx newman run <collection.json> -e production.postman_environment.json
+   npx newman run postman-collection.json -e production.postman_environment.json --insecure
    ```
 
 ## Dataset
@@ -50,21 +52,186 @@ Dataset with +9000 movies
 
 ### Authentication
 
-*Describe your JWT authentication solution. Why did you choose this approach? What alternatives exist, and what are their trade-offs?*
+**JWT Token-Based Authentication**
+
+**Why JWT?**
+- **Stateless**: Server doesn't need to store sessions — tokens contain all needed information
+- **Scalable**: Works seamlessly across multiple servers without shared session storage
+- **Self-contained**: Token includes user ID, preventing database lookups for authorization
+
+**Implementation Details:**
+- **Bearer Token Scheme**: Clients send tokens via `Authorization: Bearer <token>` header
+- **Token Generation**: Issued on successful login (POST `/user/login`)
+- **Token Validation**: Middleware (`authenticateJWT`) verifies token signature using `JWT_SECRET` environment variable
+- **Protected Routes**: All write operations (POST/PUT/DELETE) require valid JWT token
+- **Error Handling**: Invalid/expired tokens return 401 Unauthorized
+
+**Alternatives & Trade-offs:**
+| Approach | Pros | Cons |
+|---|---|---|
+| JWT | Stateless, scalable, self-contained | Token revocation is difficult, token hijacking possible if insecure |
+| Session-based (cookie) | Easier to revoke; simpler for same-origin requests | Requires server-side storage, harder to scale; CSRF risks |
+| OAuth 2.0 / OpenID | Industry standard; delegated auth | Overkill for simple APIs, more complexity |
+| API Keys | Simple to implement | No encryption, poor for sensitive operations |
+
+---
 
 ### API Design
 
-**REST students:**
-- *How did you implement HATEOAS? How does it improve API discoverability?*
-- *How did you structure your resource URLs and use HTTP methods/status codes?*
+**RESTful Resource-Oriented Architecture**
 
-**GraphQL students:**
-- *How did you design your schema (types, queries, mutations)?*
-- *How did you implement nested queries? How does the single-endpoint approach affect your design?*
+API follows REST principles with clear resource URLs and HTTP methods:
+
+**Resource Structure:**
+```
+Base URL: https://cu0203.camp.lnu.se/api
+
+├── /user
+│   ├── POST /user/register     → Create new user
+│   └── POST /user/login        → Authenticate and get JWT token
+│
+├── /movies                      → Primary CRUD resource
+│   ├── GET /movies              → List all (paginated)
+│   ├── GET /movies/{id}         → Get single movie
+│   ├── POST /movies             → Create movie (requires auth)
+│   ├── PUT /movies/{id}         → Update movie (requires auth)
+│   └── DELETE /movies/{id}      → Delete movie (requires auth)
+│
+├── /genres                      → Secondary read-only resource
+│   ├── GET /genres              → List all genres
+│   └── GET /genres/{id}         → Get single genre
+│
+└── /languages                   → Secondary read-only resource
+    ├── GET /languages           → List all languages
+    └── GET /languages/{id}      → Get single language
+```
+
+**HTTP Methods & Status Codes:**
+- **GET** → 200 OK (success), 404 Not Found, 500 Internal Server Error
+- **POST** → 201 Created (success), 400 Bad Request, 401 Unauthorized, 409 Conflict, 500 Internal Server Error
+- **PUT** → 204 No Content (success), 400 Bad Request, 401 Unauthorized, 403 Frobidden, 404 Not Found, 500 Internal Server Error
+- **DELETE** → 204 No Content (success), 401 Unauthorized, 403 Frobidden, 404 Not Found, 500 Internal Server Error
+
+**HATEOAS**
+
+Why HATEOAS?
+- **API Discoverability**: Clients can navigate the API by following links instead of hardcoding URLs
+- **Self-Documenting**: Response includes available actions (self, create, update, delete)
+- **Loose Coupling**: Server can change URLs without breaking clients; clients follow links
+- **Reduced Client-Server Coupling**: Clients don't need to know URL structure beforehand
+
+**Implementation:**
+Every resource response includes a `_links` array with available operations:
+
+```json
+{
+  "id": "69bd9abe804660e082699ba1",
+  "title": "Inception",
+  "releaseDate": "2010-07-16",
+  "genres": [
+    {
+      "id": "69bc7388d3f6fa9c10dc10ff",
+      "name": "Action",
+      "_links": [
+        {
+          "href": "https://cu0203.camp.lnu.se/api/genres/69bc7388d3f6fa9c10dc10ff",
+          "rel": "self",
+          "method": "GET"
+        }
+      ]
+    }
+  ],
+  "_links": [
+    {
+      "href": "https://cu0203.camp.lnu.se/api/movies/69bd9abe804660e082699ba1",
+      "rel": "self",
+      "method": "GET"
+    },
+    {
+      "href": "https://cu0203.camp.lnu.se/api/movies",
+      "rel": "create",
+      "method": "POST"
+    },
+    {
+      "href": "https://cu0203.camp.lnu.se/api/movies/69bd9abe804660e082699ba1",
+      "rel": "update",
+      "method": "PUT"
+    },
+    {
+      "href": "https://cu0203.camp.lnu.se/api/movies/69bd9abe804660e082699ba1",
+      "rel": "delete",
+      "method": "DELETE"
+    }
+  ]
+}
+```
+
+**URL Structure Design:**
+- **Nouns, not verbs**: `/movies` (not `/getMovies`)
+- **Resource hierarchy**: `/movies/{id}` for specific resources
+- **Consistent naming**: Plural resource names for consistency
+- **Query parameters for filtering**: `/movies?page=2` for pagination
+
+---
 
 ### Error Handling
 
-*How does your API handle errors? Describe the format and consistency of your error responses.*
+**Consistent, Informative Error Responses**
+
+All errors follow a standardized JSON format for predictable client-side handling:
+
+**Error Response Format:**
+```json
+{
+  "status": <HTTP_STATUS_CODE>,
+  "message": "<Human-readable error description>"
+}
+```
+
+**Error Categories & Examples:**
+
+| Status | Scenario | Example |
+|---|---|---|
+| **400** | Invalid client input | Missing required fields, invalid date format, invalid genre/language IDs |
+| **401** | Authentication required but missing/invalid | Missing token, expired token, invalid token signature |
+| **403** | User lacks permission | Attempting to modify another user's resource |
+| **404** | Resource not found | Non-existent movie ID, page out of range |
+| **409** | Conflict / duplicate | Email or username already registered |
+| **500** | Server error | Unexpected database/server failure |
+
+**Implementation:**
+- **Centralized Error Handler** (`middleware/errorHandler.js`): Single middleware catches all errors and formats responses
+- **Mongoose Validation Errors**: Database validation errors are caught and converted to 400 responses
+- **HTTP Status Mapping**: Error messages are mapped to appropriate HTTP status codes
+- **Consistent Logging**: All errors logged server-side with full stack trace for debugging
+
+**Example Error Responses:**
+
+```json
+// 400: Invalid Input
+{
+  "status": 400,
+  "message": "Release date must be a valid date in YYYY-MM-DD format"
+}
+
+// 401: Unauthorized
+{
+  "status": 401,
+  "message": "Unauthorized"
+}
+
+// 404: Not Found
+{
+  "status": 404,
+  "message": "Movie not found"
+}
+
+// 409: Conflict
+{
+  "status": 409,
+  "message": "Email already in use"
+}
+```
 
 ## Setup & Database Population
 

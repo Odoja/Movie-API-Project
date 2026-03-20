@@ -1,0 +1,1148 @@
+{
+  "info": {
+    "name": "Movie API Tests",
+    "description": "Comprehensive API tests covering all endpoints with positive and negative scenarios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "1. Register User - Success",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const timestamp = Date.now();",
+                  "const randomString = () => Math.random().toString(36).substring(2, 10);",
+                  "",
+                  "pm.environment.set('firstName', 'Test');",
+                  "pm.environment.set('lastName', 'Testest');",
+                  "pm.environment.set('main_email', `user_${timestamp}_${randomString()}@example.com`);",
+                  "pm.environment.set('main_username', `testuser_${timestamp}_${randomString()}`);",
+                  "pm.environment.set('main_password', 'SecurePass123');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function() {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response contains user ID', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('id');",
+                  "});",
+                  "",
+                  "pm.test('Response contains username', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.username).to.equal(pm.environment.get('main_username'));",
+                  "});",
+                  "",
+                  "if (pm.response.code === 201) {",
+                  "  pm.environment.set('userId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"{{firstName}}\",\n  \"lastName\": \"{{lastName}}\",\n  \"email\": \"{{main_email}}\",\n  \"username\": \"{{main_username}}\",\n  \"password\": \"{{main_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "2. Register User - Missing Required Fields",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response contains error message', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('message');",
+                  "  pm.expect(jsonData.message).to.not.be.empty;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"\",\n  \"username\": \"testuser123\",\n  \"password\": \"SecurePass123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "3. Login User - Success",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Use the main_user credentials created in Test 1",
+                  "const mainUsername = pm.environment.get('main_username');",
+                  "const mainPassword = pm.environment.get('main_password');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const sentUsername = pm.environment.get('main_username');",
+                  "const sentPassword = pm.environment.get('main_password');",
+                  "",
+                  "try {",
+                  "  const body = pm.response.json();",
+                  "  console.log('Body:', JSON.stringify(body, null, 2));",
+                  "} catch(e) {",
+                  "  console.log('Raw body:', pm.response.text());",
+                  "}",
+                  "",
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains access_token', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('access_token');",
+                  "});",
+                  "",
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData.access_token) {",
+                  "  pm.environment.set('access_token', jsonData.access_token);",
+                  "  console.log('==== Token saved ====');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{main_username}}\",\n  \"password\": \"{{main_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "4. Login User - Invalid Credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function() {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Response contains error message', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.message).to.include('Unauthorized');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"nonexistent\",\n  \"password\": \"wrongpassword\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Movies - GET",
+      "item": [
+        {
+          "name": "5. Get All Movies - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct Content-Type header', function() {",
+                  "  pm.response.to.have.header('Content-Type');",
+                  "  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response is valid JSON', function() {",
+                  "  pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "pm.test('Response contains movies array', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('movies');",
+                  "  pm.expect(jsonData.movies).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Response contains metadata', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('metaData');",
+                  "  pm.expect(jsonData.metaData).to.have.property('page');",
+                  "  pm.expect(jsonData.metaData).to.have.property('totalPages');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "6. Get All Movies - Invalid Query Parameters",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function() {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Response contains error message', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('message');",
+                  "  pm.expect(jsonData.message).to.include('Page not found');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies?page=500",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "500"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "7. Get Single Movie - Success",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const firstMovieId = pm.environment.get('firstMovieId');",
+                  "if (!firstMovieId) {",
+                  "  const getMoviesRequest = {",
+                  "    url: pm.environment.get('base_url') + '/movies',",
+                  "    method: 'GET'",
+                  "  };",
+                  "  pm.sendRequest(getMoviesRequest, function(err, response) {",
+                  "    if (!err) {",
+                  "      try {",
+                  "        const data = response.json();",
+                  "        if (data.movies && data.movies.length > 0) {",
+                  "          const movieId = data.movies[0].id || data.movies[0]._id;",
+                  "          pm.environment.set('firstMovieId', movieId);",
+                  "        }",
+                  "      } catch(e) {",
+                  "        console.error('Error parsing movies:', e);",
+                  "      }",
+                  "    }",
+                  "  });",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains movie details', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('id');",
+                  "  pm.expect(jsonData).to.have.property('title');",
+                  "  pm.expect(jsonData).to.have.property('releaseDate');",
+                  "});",
+                  "",
+                  "pm.test('Response includes HATEOAS links', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('_links');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies/{{firstMovieId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{firstMovieId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "8. Get Movie - Non-existent ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 404', function() {",
+                  "  pm.response.to.have.status(404);",
+                  "});",
+                  "",
+                  "pm.test('Response contains error message', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.message).to.include('Movie not found');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/movies/000000000000000000000000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "000000000000000000000000"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Movies - POST, PUT, DELETE",
+      "item": [
+        {
+          "name": "9. Create Movie - Success",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const timestamp = Date.now();",
+                  "const randomTitle = `Movie ${Math.random().toString(36).substring(7)} ${timestamp}`;",
+                  "",
+                  "pm.environment.set('movieTitle', randomTitle);",
+                  "pm.environment.set('movieOverview', `Test movie created at ${new Date().toISOString()}`);",
+                  "pm.environment.set('movieReleaseDate', '2024-01-15');",
+                  "",
+                  "// Fetch genreId if not already set",
+                  "const genreId = pm.environment.get('genreId');",
+                  "if (!genreId) {",
+                  "  const getGenresRequest = {",
+                  "    url: pm.environment.get('base_url') + '/genres',",
+                  "    method: 'GET'",
+                  "  };",
+                  "  pm.sendRequest(getGenresRequest, function(err, response) {",
+                  "    if (!err) {",
+                  "      try {",
+                  "        const data = response.json();",
+                  "        if (data && data.length > 0) {",
+                  "          const gId = data[0]._id || data[0].id;",
+                  "          pm.environment.set('genreId', gId);",
+                  "        }",
+                  "      } catch(e) {",
+                  "        console.error('Error parsing genres:', e);",
+                  "      }",
+                  "    }",
+                  "  });",
+                  "}",
+                  "",
+                  "// Fetch languageId if not already set",
+                  "const languageId = pm.environment.get('languageId');",
+                  "if (!languageId) {",
+                  "  const getLanguagesRequest = {",
+                  "    url: pm.environment.get('base_url') + '/languages',",
+                  "    method: 'GET'",
+                  "  };",
+                  "  pm.sendRequest(getLanguagesRequest, function(err, response) {",
+                  "    if (!err) {",
+                  "      try {",
+                  "        const data = response.json();",
+                  "        if (data && data.length > 0) {",
+                  "          const lId = data[0]._id || data[0].id;",
+                  "          pm.environment.set('languageId', lId);",
+                  "        }",
+                  "      } catch(e) {",
+                  "        console.error('Error parsing languages:', e);",
+                  "      }",
+                  "    }",
+                  "  });",
+                  "}",
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let jsonData;",
+                  "try {",
+                  "  jsonData = pm.response.json();",
+                  "} catch(e) {",
+                  "  jsonData = {};",
+                  "}",
+                  "",
+                  "pm.test('Status code is 201', function() {",
+                  "  pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response contains created movie', function() {",
+                  "  pm.expect(jsonData).to.have.property('id');",
+                  "  pm.expect(jsonData.title).to.equal(pm.environment.get('movieTitle'));",
+                  "});",
+                  "",
+                  "if (jsonData && jsonData.id) {",
+                  "  pm.environment.set('createdMovieId', jsonData.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"{{movieTitle}}\",\n  \"releaseDate\": \"{{movieReleaseDate}}\",\n  \"overview\": \"{{movieOverview}}\",\n  \"genres\": [\"{{genreId}}\"],\n  \"language\": \"{{languageId}}\",\n  \"posterUrl\": \"https://example.com/poster.jpg\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "10. Create Movie - Invalid data",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 400', function() {",
+                  "  pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test('Response contains Cast error for invalid genre/language', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  const message = jsonData.message || '';",
+                  "  pm.expect(message).to.include('Cast to');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"{{movieTitle}}\",\n  \"releaseDate\": \"{{movieReleaseDate}}\",\n  \"overview\": \"{{movieOverview}}\",\n  \"genres\": [\"\"],\n  \"language\": \"\",\n  \"posterUrl\": \"https://example.com/poster.jpg\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "11. Create Movie - Without Auth",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function() {",
+                  "  pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test('Response contains Unauthorized message', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData.message).to.include('Unauthorized');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Movie without auth\",\n  \"releaseDate\": \"2024-01-15\",\n  \"overview\": \"This should fail\",\n  \"genres\": [\"genre123\"],\n  \"language\": \"lang123\",\n  \"posterUrl\": \"https://example.com/poster.jpg\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{base_url}}/movies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies"
+              ]
+            }
+          }
+        },
+        {
+          "name": "12. Update Movie - Success",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const timestamp = Date.now();",
+                  "pm.environment.set('updatedTitle', `Updated Movie ${timestamp}`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 204', function() {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"{{updatedTitle}}\",\n  \"overview\": \"Updated overview\"\n}"
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/movies/{{createdMovieId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{createdMovieId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "13. Update Movie - Without Auth",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function() {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Unauthorized Update\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{base_url}}/movies/{{createdMovieId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{createdMovieId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "14. Delete Movie - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 204', function() {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/movies/{{createdMovieId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{createdMovieId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "15. Delete Movie - Without Auth",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 401', function() {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "url": {
+              "raw": "{{base_url}}/movies/{{createdMovieId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "movies",
+                "{{createdMovieId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Genre and Language Tests",
+      "item": [
+        {
+          "name": "16. Get All Genres - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct Content-Type header', function() {",
+                  "  pm.response.to.have.header('Content-Type');",
+                  "  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response is valid JSON array', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Save first genre ID for next test', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  if (jsonData.length > 0) {",
+                  "    pm.environment.set('genreId', jsonData[0]._id);",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/genres",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "genres"
+              ]
+            }
+          }
+        },
+        {
+          "name": "17. Get Specific Genre - Success",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const genreId = pm.environment.get('genreId');",
+                  "if (!genreId) {",
+                  "  const getGenresRequest = {",
+                  "    url: pm.environment.get('base_url') + '/genres',",
+                  "    method: 'GET'",
+                  "  };",
+                  "  pm.sendRequest(getGenresRequest, function(err, response) {",
+                  "    if (!err) {",
+                  "      try {",
+                  "        const data = response.json();",
+                  "        if (data && data.length > 0) {",
+                  "          const gId = data[0]._id || data[0].id;",
+                  "          pm.environment.set('genreId', gId);",
+                  "        }",
+                  "      } catch(e) {",
+                  "        console.error('Error parsing genres:', e);",
+                  "      }",
+                  "    }",
+                  "  });",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct Content-Type header', function() {",
+                  "  pm.response.to.have.header('Content-Type');",
+                  "  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response contains genre with id property', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  const hasId = jsonData.hasOwnProperty('id') || jsonData.hasOwnProperty('_id');",
+                  "  pm.expect(hasId).to.be.true;",
+                  "  pm.expect(jsonData).to.have.property('name');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/genres/{{genreId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "genres",
+                "{{genreId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "18. Get All Languages - Success",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct Content-Type header', function() {",
+                  "  pm.response.to.have.header('Content-Type');",
+                  "  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response is valid JSON', function() {",
+                  "  pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "pm.test('Response is valid JSON array', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test('Save first language ID for next test', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  if (jsonData.length > 0) {",
+                  "    const languageId = jsonData[0]._id || jsonData[0].id;",
+                  "    pm.environment.set('languageId', languageId);",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/languages",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "languages"
+              ]
+            }
+          }
+        },
+        {
+          "name": "19. Get Specific Language - Success",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const languageId = pm.environment.get('languageId');",
+                  "if (!languageId) {",
+                  "  console.log('No languageId found from Test 17, fetching languages...');",
+                  "  const getLanguagesRequest = {",
+                  "    url: pm.environment.get('base_url') + '/languages',",
+                  "    method: 'GET'",
+                  "  };",
+                  "  pm.sendRequest(getLanguagesRequest, function(err, response) {",
+                  "    if (!err) {",
+                  "      try {",
+                  "        const data = response.json();",
+                  "        if (data && data.length > 0) {",
+                  "          const langId = data[0]._id || data[0].id;",
+                  "          console.log('Fetched languageId:', langId);",
+                  "          pm.environment.set('languageId', langId);",
+                  "        }",
+                  "      } catch(e) {",
+                  "        console.error('Error parsing languages:', e);",
+                  "      }",
+                  "    }",
+                  "  });",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function() {",
+                  "  pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has correct Content-Type header', function() {",
+                  "  pm.response.to.have.header('Content-Type');",
+                  "  pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+                  "});",
+                  "",
+                  "pm.test('Response contains language with id and code properties', function() {",
+                  "  const jsonData = pm.response.json();",
+                  "  pm.expect(jsonData).to.have.property('id');",
+                  "  pm.expect(jsonData).to.have.property('code');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/languages/{{languageId}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "languages",
+                "{{languageId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sequence Tests",
+      "item": [
+        {
+          "name": "20. Complete Sequence - Register, Login, Create, Read, Update, Delete",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Generate unique data for this sequence",
+                  "const timestamp = Date.now();",
+                  "const randomString = () => Math.random().toString(36).substring(2, 15);",
+                  "",
+                  "pm.environment.set('seq_email', `seq_${timestamp}_${randomString()}@example.com`);",
+                  "pm.environment.set('seq_username', `sequser_${timestamp}_${randomString()}`);",
+                  "pm.environment.set('seq_password', `SeqPass${timestamp}12`);",
+                  "pm.environment.set('seq_movieTitle', `Sequence Movie ${timestamp}`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Sequence test - successful flow', function() {",
+                  "  // Verify that all environment variables from the sequence are set",
+                  "  pm.expect(pm.environment.get('seq_email')).to.exist;",
+                  "  pm.expect(pm.environment.get('seq_username')).to.exist;",
+                  "  pm.expect(pm.environment.get('seq_password')).to.exist;",
+                  "  pm.expect(pm.environment.get('seq_movieTitle')).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "// This sequence test verifies the complete flow:\n// 1. Register a new user with unique credentials\n// 2. Login using the registered credentials and obtain JWT token\n// 3. Create a new movie with the authenticated token\n// 4. Retrieve the created movie by ID\n// 5. Update the movie with new data\n// 6. Delete the movie\n//\n// Each step depends on the previous step's output (environment variables)\n{\n  \"firstName\": \"Sequence\",\n  \"lastName\": \"Tester\",\n  \"email\": \"{{seq_email}}\",\n  \"username\": \"{{seq_username}}\",\n  \"password\": \"{{seq_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "register"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://cu0203.camp.lnu.se/api",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
