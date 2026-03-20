@@ -1,55 +1,30 @@
+image: node:22
+
+# Cachear node_modules mellan pipelines
+cache:
+  paths:
+    - node_modules/
+
+# Pipeline-steg i ordning
 stages:
-  - install
   - lint
   - test
 
-before_script:
-  - echo "Starting pipeline for Movie API..."
-
-install_dependencies:
-  stage: install
-  image: node:20
-  script:
-    - npm ci
-  artifacts:
-    paths:
-      - node_modules/
-    expire_in: 1 hour
-  cache:
-    paths:
-      - node_modules/
-
+# Lint-steg med ESLint
 lint:
   stage: lint
-  image: node:20
-  dependencies:
-    - install_dependencies
   script:
+    - npm install
     - npm run lint
 
+# Teststeg – kör Postman tests med Newman
 api_tests:
   stage: test
-  image: node:20
-  dependencies:
-    - install_dependencies
-  services:
-    - mongo:7
-  variables:
-    MONGO_URI: "mongodb://mongo:27018/assignmentdb"
-    JWT_SECRET: "test-secret-key"
-    ACCESS_TOKEN_LIFE: "1h"
-    PORT: "3000"
-  before_script:
-    - apt-get update && apt-get install -y wait-for-it
-    - npm ci
   script:
-    - echo "Starting API server..."
-    - npm start &
-    - sleep 5
-    - echo "Running API tests with Newman..."
-    - npx newman run postman-collection.json -e production.postman_environment.json --reporters cli,json
-  after_script:
-    - echo "Tests completed"
+    - npm install
+    - echo "🧪 Running Postman/Newman API tests..."
+    - npx newman run postman-collection.json -e production.postman_environment.json --insecure --reporters cli,json
+    - echo "✅ Newman tests completed successfully!"
   artifacts:
     reports:
       junit: newman-results.xml
@@ -57,31 +32,19 @@ api_tests:
   retry:
     max: 1
 
+# Generate HTML test report on main branch
 pages:
   stage: test
-  image: node:20
-  dependencies:
-    - install_dependencies
-  services:
-    - mongo:7
-  variables:
-    MONGO_URI: "mongodb://mongo:27018/assignmentdb"
-    JWT_SECRET: "test-secret-key"
-    ACCESS_TOKEN_LIFE: "1h"
-    PORT: "3000"
-  before_script:
-    - npm ci
   script:
-    - echo "Starting API server for coverage report..."
-    - npm start &
-    - sleep 5
-    - npx newman run postman-collection.json -e production.postman_environment.json --reporters html,json --reporter-html-export test-results.html --reporter-json-export newman-results.json
+    - npm install
+    - echo "📊 Generating HTML test report..."
+    - npx newman run postman-collection.json -e production.postman_environment.json --insecure --reporters cli,html --reporter-html-export test-results.html
     - mkdir -p public
-    - mv test-results.html public/test-results.html
-    - mv newman-results.json public/test-results.json
+    - mv test-results.html public/index.html
+    - echo "✅ Test report generated and deployed to Pages"
   artifacts:
     paths:
       - public
-    expire_in: 1 month
+    expire_in: 30 days
   only:
     - main
