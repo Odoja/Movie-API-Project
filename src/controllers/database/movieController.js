@@ -41,11 +41,25 @@ export class MovieController {
       const limit = 20
       const skip = (page - 1) * limit
 
+      // Validate page is positive
+      if (page < 1) {
+        const error = new Error('Invalid page number')
+        error.status = 400
+        throw error
+      }
+
       const query = titleQuery(req.query)
 
       const result = await movieM.getMovies(skip, limit, query)
 
       const metaData = pagination.buildMetadata(page, limit, result.total, req)
+
+      // Check if page is out of range
+      if (page > metaData.totalPages && result.total > 0) {
+        const error = new Error('Page not found')
+        error.status = 404
+        throw error
+      }
 
       res.json({
         movies: result.movies.map(movie => formatMovie(movie, req)),
