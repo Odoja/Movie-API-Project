@@ -58,7 +58,7 @@ router.get('/',
  * /genres/{id}:
  *   get:
  *     summary: Get a single genre
- *     description: Retrieves a specific genre by ID, you can get the ID from above using the GET /genres
+ *     description: Retrieves a specific genre by ID, you can get the ID from above using the GET /genres endpoint
  *     tags: [Genres]
  *     parameters:
  *       - in: path

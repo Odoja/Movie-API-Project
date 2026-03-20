@@ -8,7 +8,7 @@ const genreM = new GenreModel()
  */
 export class GenreController {
   /**
-   * Sends a JSON response containing genres
+   * Sends a JSON response containing genres.
    *
    * @param {object} req - Express request object.
    * @param {object} res - Express response object.
