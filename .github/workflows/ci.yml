@@ -43,10 +43,13 @@ jobs:
     - name: Install wait-on
       run: npm install -g wait-on
 
+
     - name: Start server
       env:
-        MONGO_URI: mongodb://localhost:27017/test_api
-        JWT_SECRET: test_secret_key
+        DB_CONNECTION_STRING: mongodb://localhost:27018/Movie-API-Project
+        JWT_SECRET: your-super-secret-key-change-this-in-production-min-32-characters-long
+        ACCESS_TOKEN_LIFE: 1h
+        PORT: 8081
       run: npm start &
 
     - name: Wait for server to be ready
@@ -54,7 +57,7 @@ jobs:
 
     - name: Seed database
       env:
-        MONGO_URI: mongodb://localhost:27017/test_api
+        DB_CONNECTION_STRING: mongodb://localhost:27018/Movie-API-Project
       run: node seeds/seedMovies.js
       
     - name: Run tests
