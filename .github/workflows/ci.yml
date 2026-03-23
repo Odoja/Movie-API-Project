@@ -50,7 +50,7 @@ jobs:
         JWT_SECRET: your-super-secret-key-change-this-in-production-min-32-characters-long
         ACCESS_TOKEN_LIFE: 1h
         PORT: 8081
-      run: npm start &
+      run: npm run dev &
 
     - name: Wait for server to be ready
       run: wait-on http://localhost:8081/api/user/register --timeout 20000
