@@ -319,7 +319,7 @@ See [all requirements in Issues](../../issues/). Close issues as you implement t
 | Full CRUD for primary resource, read-only for secondary resources | [#2](../../issues/2) | ✅ |
 | JWT authentication for write operations | [#3](../../issues/3) | ✅ |
 | Error handling (400, 401, 404 with consistent format) | [#4](../../issues/4) | ✅ |
-| Filtering and pagination for large result sets | [#17](../../issues/17) | :white_large_square: |
+| Filtering and pagination for large result sets | [#17](../../issues/17) | ✅ |
 
 ### Functional Requirements — REST
 
@@ -340,12 +340,12 @@ See [all requirements in Issues](../../issues/). Close issues as you implement t
 
 | Requirement | Issue | Status |
 |---|---|---|
-| API documentation (Swagger/OpenAPI or Postman) | [#6](../../issues/6) | :white_large_square: |
+| API documentation (Swagger/OpenAPI or Postman) | [#6](../../issues/6) | ✅ |
 | Automated Postman tests (20+ test cases, success + failure) | [#7](../../issues/7) | :white_large_square: |
 | CI/CD pipeline running tests on every commit/MR | [#8](../../issues/8) | :white_large_square: |
 | Seed script for sample data | [#5](../../issues/5) | ✅ |
 | Code quality (consistent standard, modular, documented) | [#10](../../issues/10) | :white_large_square: |
-| Deployed and publicly accessible | [#9](../../issues/9) | :white_large_square: |
+| Deployed and publicly accessible | [#9](../../issues/9) | ✅ |
 | Peer review reflection submitted on merge request | [#11](../../issues/11) | :white_large_square: |
 
 
