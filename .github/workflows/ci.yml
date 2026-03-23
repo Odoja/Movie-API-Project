@@ -37,19 +37,20 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-
-    # Linting borttaget för att inte stoppa pipeline
+    - name: Create .env file for CI
+      run: |
+        cat > .env << EOF
+        DB_CONNECTION_STRING="mongodb://localhost:27018/Movie-API-Project"
+        PORT=8081
+        BASE_URL="/"
+        JWT_SECRET="your-super-secret-key-change-this-in-production-min-32-characters-long"
+        ACCESS_TOKEN_LIFE="1h"
+        EOF
 
     - name: Install wait-on
       run: npm install -g wait-on
 
-
     - name: Start server
-      env:
-        DB_CONNECTION_STRING: mongodb://localhost:27018/Movie-API-Project
-        JWT_SECRET: your-super-secret-key-change-this-in-production-min-32-characters-long
-        ACCESS_TOKEN_LIFE: 1h
-        PORT: 8081
       run: npm run dev &
 
     - name: Wait for server to be ready
