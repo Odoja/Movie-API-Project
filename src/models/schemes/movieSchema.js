@@ -6,6 +6,12 @@ const movieSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Release date is required'],
     validate: {
+      /**
+       * Lint.
+       *
+       * @param {*} v - Lint
+       * @returns {*} - Lint.
+       */
       validator: function (v) {
         const date = new Date(v)
         return !isNaN(date.getTime()) && /^\d{4}-\d{2}-\d{2}$/.test(v)
@@ -29,6 +35,12 @@ const movieSchema = new mongoose.Schema({
     ref: 'Genre',
     required: [true, 'At least one genre is required'],
     validate: {
+      /**
+       * Lint.
+       *
+       * @param {*} v - Lint
+       * @returns {*} - Lint.
+       */
       validator: function (v) {
         return mongoose.Types.ObjectId.isValid(v)
       },
@@ -40,6 +52,12 @@ const movieSchema = new mongoose.Schema({
     ref: 'Language',
     required: [true, 'Language is required'],
     validate: {
+      /**
+       * Lint.
+       *
+       * @param {*} v - Lint
+       * @returns {*} - Lint.
+       */
       validator: function (v) {
         return mongoose.Types.ObjectId.isValid(v)
       },

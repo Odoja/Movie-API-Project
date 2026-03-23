@@ -4,6 +4,13 @@ import mongoose from 'mongoose'
 const convertOptions = Object.freeze({
   getters: true,
   versionKey: false,
+  /**
+   * Lint.
+   *
+   * @param {*} doc - Lint
+   * @param {*} ret - Lint
+   * @returns {*} - Lint.
+   */
   transform: (doc, ret) => {
     delete ret._id
     return ret
