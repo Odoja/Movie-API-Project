@@ -4,6 +4,8 @@
 
 API Design Assignment
 
+GitHub Repo - https://github.com/Odoja/Movie-API-Project
+
 ## Objective
 
 Design and develop a robust, well-documented API (REST or GraphQL) that allows users to retrieve and manage information from a dataset of your choice. The API must include JWT authentication, automated testing via Postman/Newman in a CI/CD pipeline, and be publicly deployed.
