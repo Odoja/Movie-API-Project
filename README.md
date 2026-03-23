@@ -10,8 +10,6 @@ Design and develop a robust, well-documented API (REST or GraphQL) that allows u
 
 Choose a dataset (10000+ data points) that interests you — it should include at least one primary CRUD resource and two additional read-only resources. Sources like [Kaggle](https://www.kaggle.com/datasets), public APIs, or CSV files work well. Pick something you find interesting, as you will reuse this API in the next assignment (WT dashboard).
 
-*Describe your API in a few sentences: what dataset does it serve, what are its main resources, and what can users do with it?*
-
 ## Implementation Type
 
 REST
@@ -246,7 +244,7 @@ All errors follow a standardized JSON format for predictable client-side handlin
 Create a `.env` file in the project root with the following variables:
 
 ```env
-DB_CONNECTION_STRING=mongodb://localhost:27018/Local-Movie-API-Project
+DB_CONNECTION_STRING=mongodb://localhost:27018/Movie-API-Project
 ```
 
 ### Running the Seed Script
@@ -267,7 +265,7 @@ npm run seed
 - Checks for existing movies (by title + release date) to prevent duplicates
 - Inserts only new movies in optimized batches of 1000
 - Logs progress and duplicate detection for each batch
-- Safe to run multiple times — duplicates are skipped
+- Safe to run multiple times, duplicates are skipped
 
 **Expected output (first run):**
 ```
@@ -294,18 +292,41 @@ Batch 2: All 1000 movies already exist, skipped
 ✓ Successfully seeded database! 0 new movies added, 9827 duplicates skipped.
 ```
 
+
 ## Core Technologies Used
 
-*List the technologies you chose and briefly explain why:*
+- **Node.js**  
+  JavaScript runtime for building scalable server-side applications. Chosen for its performance, ecosystem, and suitability for API development.
+- **Express**  
+  Minimal and flexible Node.js web framework for routing, middleware, and HTTP handling.
+- **MongoDB + Mongoose**  
+  NoSQL document database for flexible data storage. Mongoose provides schema validation and easy integration with Node.js.
+- **JWT (jsonwebtoken)**  
+  For secure, stateless authentication using access tokens.
+- **bcrypt**
+  For secure password hashing and storage.
+- **Swagger (swagger-jsdoc, swagger-ui-express)**  
+  For automatic API documentation and interactive API exploration.
+- **Postman & Newman**  
+  For creating, running, and automating API tests both locally and in CI/CD.
+- **Nodemon**  
+  For automatic server restarts during development.
+- **csv-parser**  
+  For importing and parsing the movie dataset from CSV during seeding.
+- **GitHub Actions**  
+  For CI/CD: automatically building, seeding, and testing the API on every commit and pull request.
 
 
 ## Reflection
 
-*What was hard? What did you learn? What would you do differently?*
+One of the main challenges was figuring out new technologies that I havn't previously worked with, often without formal instruction. This required me to be reliant on seeking out information, experimenting, with help of AI.
+
+Something that helped a lot was looking back at my old assignments. Being able to reuse code and ideas from earlier projects saved me a ton of time.
+
 
 ## Acknowledgements
 
-*Resources, attributions, or shoutouts.*
+- [9000+ Movies Dataset – Kaggle](https://www.kaggle.com/datasets/disham993/9000-movies-dataset) for the movie data.
 
 ## Requirements
 
@@ -341,10 +362,10 @@ See [all requirements in Issues](../../issues/). Close issues as you implement t
 | Requirement | Issue | Status |
 |---|---|---|
 | API documentation (Swagger/OpenAPI or Postman) | [#6](../../issues/6) | ✅ |
-| Automated Postman tests (20+ test cases, success + failure) | [#7](../../issues/7) | :white_large_square: |
-| CI/CD pipeline running tests on every commit/MR | [#8](../../issues/8) | :white_large_square: |
+| Automated Postman tests (20+ test cases, success + failure) | [#7](../../issues/7) | ✅ |
+| CI/CD pipeline running tests on every commit/MR | [#8](../../issues/8) | ✅ |
 | Seed script for sample data | [#5](../../issues/5) | ✅ |
-| Code quality (consistent standard, modular, documented) | [#10](../../issues/10) | :white_large_square: |
+| Code quality (consistent standard, modular, documented) | [#10](../../issues/10) | ✅ |
 | Deployed and publicly accessible | [#9](../../issues/9) | ✅ |
 | Peer review reflection submitted on merge request | [#11](../../issues/11) | :white_large_square: |
 
