@@ -35,7 +35,7 @@ REST
 1. **CI/CD pipeline** — check the pipeline output in GitLab for test results.
 2. **Run manually** — no setup needed:
    ```
-   npx newman run postman-collection.json -e production.postman_environment.json --insecure
+   npm run test
    ```
 
 ## Dataset
